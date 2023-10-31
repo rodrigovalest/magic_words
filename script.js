@@ -20,11 +20,17 @@ function generateDropping() {
     ctx.clearRect(box.x, box.y, 100, 20);
     box.y++;
     ctx.fillRect(box.x, box.y, 100, 20);
-
-    console.log(boxes);
   });
 
-  // Gerar novo bloco sempre quando o tempo for 200 e resetar o tempo
+  // Gerar novo bloco no lado direito sempre quando o tempo for 100
+  if (tempo == 100) {
+    const x = getRandomInt(330, 480);
+    let y = 0;
+    ctx.fillRect(x, y, 100, 20);
+    boxes.push({ x, y });
+  }
+
+  // Gerar novo bloco no lado esquerdo sempre quando o tempo for 200 e resetar o tempo
   if (tempo == 200) {
     const x = getRandomInt(30, 200);
     let y = 0;
