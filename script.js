@@ -6,15 +6,31 @@ function getRandomInt(min, max) {
 
 let c = document.getElementById("gameboard");
 let ctx = c.getContext("2d");
+
 const boxes = [];
 let tempo = 0;
 
+const character = {
+  x: 300,
+  y: 560,
+  default: true
+}
+ctx.fillRect(character.x, character.y, 40, 40);
+
 function generateDropping() {
   // Para cada caixa no array, apagar o quadrado antigo e printar um novo
-  boxes.forEach((box) => {
+  boxes.forEach((box, index) => {
     // Remover a primeira box dentro de boxes, quando ela chegar no final da página (DETECTAR COLISÃO AQUI)
     if (box.y > 600) {
-      boxes.splice(0, 1);
+      boxes.splice(index, 1);
+    }
+
+    // Mover character para a ultima caixa caindo
+    if (index == 0 && box.y > 400) {
+      ctx.clearRect(character.x, character.y, 40, 40);
+      character.y = box.y - 40;
+      character.x = box.x + 30;
+      ctx.fillRect(character.x, character.y, 40, 40);
     }
   
     ctx.clearRect(box.x, box.y, 100, 20);
@@ -37,6 +53,12 @@ function generateDropping() {
     ctx.fillRect(x, y, 100, 20);
     boxes.push({ x, y });
     tempo = 0;
+  }
+
+  if (boxes[0]?.y < 50) {
+    if (character.default == false) {
+      box
+    }
   }
 
   tempo++;
