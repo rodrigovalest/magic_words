@@ -10,15 +10,26 @@ let ctx = c.getContext("2d");
 const droppingWords = [];
 let tempo = 0;
 
-
+const character = {
+  x: 300,
+  y: 560
+}
+ctx.fillRect(character.x, character.y, 40, 40);
 
 function generateDropping() {
   droppingWords.forEach((word, index) => {
     if (word.y > 630) {
       droppingWords.splice(index, 1);
     }
+
+    if (index == 0 && word.y > 400) {
+      ctx.clearRect(character.x, character.y, 40, 40);
+      character.y = word.y - 65;
+      character.x = word.x - 10;
+      ctx.fillRect(character.x, character.y, 40, 40);
+    }
   
-    ctx.clearRect(word.x - 10, word.y, word.width + 20, -35);
+    ctx.clearRect(word.x - 10, word.y, word.width + 20, -25);
     word.y++;
 
     ctx.fillStyle = "gray";
