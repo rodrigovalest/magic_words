@@ -78,8 +78,16 @@ function generateDropping() {
       droppingWords.splice(index, 1);
     }
 
-    // Terminar o jogo
-    if ((character.y >= (hCanvas - 40) && character.playing) || (index == 0 && word.y >= (hCanvas - 10))) {
+    // Fazer personagem acompanhar a queda da ultima palavra digitada
+    if (word == lastTypedWord) {
+      ctx.clearRect(character.x, character.y, 40, 40);
+      character.y = word.y - 65;
+      character.x = word.x - 10;
+      ctx.fillRect(character.x, character.y, 40, 40);
+    }
+
+    // Terminar o jogo (se o personagem cair no fim do mapa ou se ele não digitar nada no começo do jogo)
+    if ((character.y >= (hCanvas - 40) && character.playing) || (index == 0 && word.y >= (hCanvas - 10) && !character.playing)) {
       droppingWords.length = 0;
       character.playing = false;
       tempo = 0;
@@ -88,14 +96,6 @@ function generateDropping() {
       gameOver = true;
 
       ctx.clearRect(0, 0, wCanvas, hCanvas);
-    }
-
-    // Fazer personagem acompanhar a queda da ultima palavra digitada
-    if (word == lastTypedWord) {
-      ctx.clearRect(character.x, character.y, 40, 40);
-      character.y = word.y - 65;
-      character.x = word.x - 10;
-      ctx.fillRect(character.x, character.y, 40, 40);
     }
   
     // Fazer queda da palavra (e sua caixa cinza ou azul caso já tenha sido digitada)
@@ -149,27 +149,28 @@ document.addEventListener("keydown", function (event) {
   const keyPressed = event.key.toLowerCase();
 
   if (droppingWords.length > 0) {
-    let currentWord;
+    let currentWordIndex;
 
     for (let i = 0; i < droppingWords.length; i++) {
       if (!droppingWords[i].typed) {
-        currentWord = droppingWords[i];
+        currentWordIndex = i;
         break;
       }
     }
 
-    if (currentWord) {
-      const nextLetter = currentWord.word.charAt(countLetter);
+    const nextWord = droppingWords[currentWordIndex];
+    const nextLetter = nextWord.word.charAt(countLetter);
 
-      if (keyPressed === nextLetter) {
-        countLetter++;
+    if (keyPressed === nextLetter) {
+      countLetter++;
 
-        if (countLetter === currentWord.word.length) {
-          countLetter = 0;
-          currentWord.typed = true;
-          lastTypedWord = currentWord;
-          character.playing = true;
-        }
+      if (countLetter === nextWord.word.length) {
+        countLetter = 0;
+        lastTypedWord = nextWord;
+        character.playing = true;
+
+        nextWord.typed = true;
+        droppingWords[currentWordIndex] = nextWord;
       }
     }
   }
