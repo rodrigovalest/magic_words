@@ -55,7 +55,7 @@ const hCanvas = c.height;
 
 
 const droppingWords = [];
-let gameOver = false;
+let gameOver = true;
 let lastTypedWord;
 let tempo = 0;
 const character = {
@@ -63,13 +63,16 @@ const character = {
   y: hCanvas - 40,
   playing: false
 }
-ctx.fillRect(character.x, character.y, 40, 40);
 
 function generateDropping() {
   if (gameOver) {
     ctx.clearRect(0, 0, wCanvas, hCanvas);
     return;
   }
+
+  // Desenhar o local padrão do personagem
+  if (!character.playing)
+    ctx.fillRect(character.x, character.y, 40, 40);
 
   // Para cada palavra caindo...
   droppingWords.forEach((word, index) => {
@@ -88,13 +91,12 @@ function generateDropping() {
 
     // Terminar o jogo (se o personagem cair no fim do mapa ou se ele não digitar nada no começo do jogo)
     if ((character.y >= (hCanvas - 40) && character.playing) || (index == 0 && word.y >= (hCanvas - 10) && !character.playing)) {
+      playStop();
+      gameOver = true;
       droppingWords.length = 0;
       character.playing = false;
       tempo = 0;
-      countLetter = 0;
       lastTypedWord = null;
-      gameOver = true;
-
       ctx.clearRect(0, 0, wCanvas, hCanvas);
     }
   
@@ -148,6 +150,9 @@ let countLetter = 0;
 document.addEventListener("keydown", function (event) {
   const keyPressed = event.key.toLowerCase();
 
+  if (gameOver)
+    countLetter = 0;
+
   if (droppingWords.length > 0) {
     let currentWordIndex;
 
@@ -175,3 +180,14 @@ document.addEventListener("keydown", function (event) {
     }
   }
 });
+
+function playStop() {
+  if (gameOver) {
+    document.getElementById("playStopButton").textContent = "Stop";
+    gameOver = false;
+    generateDropping();
+  } else {
+    document.getElementById("playStopButton").textContent = "Play";
+    gameOver = true;
+  }
+}
