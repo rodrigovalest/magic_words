@@ -4,8 +4,18 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
+let img = new Image();
+img.src = 'css_sprites.png';
+img.onload = function() {
+  init();
+};
+
 let c = document.getElementById("gameboard");
 let ctx = c.getContext("2d");
+
+function init() {
+  ctx.drawImage(img, 0, 0, 120, 120, 10, 10, 120, 180);
+}
 
 const boxes = [];
 let tempo = 0;
