@@ -53,11 +53,15 @@ let ctx = c.getContext("2d");
 const wCanvas = c.width;
 const hCanvas = c.height;
 
-
 const droppingWords = [];
-let gameOver = true;
 let lastTypedWord;
+
+let gameOver = true;
 let tempo = 0;
+
+let score = 0;
+let errors = 0;
+
 const character = {
   x: wCanvas / 2,
   y: hCanvas - 40,
@@ -168,6 +172,9 @@ document.addEventListener("keydown", function (event) {
 
     if (keyPressed === nextLetter) {
       countLetter++;
+      
+      score++;
+      document.getElementById("score").textContent = score;
 
       if (countLetter === nextWord.word.length) {
         countLetter = 0;
@@ -177,15 +184,24 @@ document.addEventListener("keydown", function (event) {
         nextWord.typed = true;
         droppingWords[currentWordIndex] = nextWord;
       }
+    } else {
+      errors++;
+      document.getElementById("errors").textContent = errors;
     }
   }
 });
 
 function playStop() {
+  // Iniciar e terminar o jogo (respectivamente)
   if (gameOver) {
     document.getElementById("playStopButton").textContent = "Stop";
     gameOver = false;
     generateDropping();
+
+    score = 0;
+    document.getElementById("score").textContent = score;
+    errors = 0;
+    document.getElementById("errors").textContent = errors;
   } else {
     document.getElementById("playStopButton").textContent = "Play";
     gameOver = true;

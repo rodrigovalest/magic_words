@@ -9,7 +9,11 @@
 <body>
     <main>
         <canvas id="gameboard" height="600" width="600"></canvas>
-        <button id="playStopButton" onclick="playStop()">Play</button>
+        <div>
+            <p>Pontuação: <span id="score">0</span></p>
+            <p>Erros: <span id="errors">0</span></p>
+            <button id="playStopButton" onclick="playStop()">Play</button>
+        </div>
     </main>
     <script src="script.js"></script>
 </body>
