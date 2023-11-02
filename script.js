@@ -69,7 +69,15 @@ const character = {
 }
 
 function generateDropping() {
-  if (gameOver) {
+  if (gameOver) {  
+    droppingWords.length = 0;
+    lastTypedWord = null;
+    tempo = 0;
+
+    character.playing = false;
+    character.x = wCanvas / 2;
+    character.y = hCanvas - 40;
+    
     ctx.clearRect(0, 0, wCanvas, hCanvas);
     return;
   }
@@ -97,11 +105,8 @@ function generateDropping() {
     if ((character.y >= (hCanvas - 40) && character.playing) || (index == 0 && word.y >= (hCanvas - 10) && !character.playing)) {
       playStop();
       gameOver = true;
-      droppingWords.length = 0;
-      character.playing = false;
-      tempo = 0;
-      lastTypedWord = null;
       ctx.clearRect(0, 0, wCanvas, hCanvas);
+      return;
     }
   
     // Fazer queda da palavra (e sua caixa cinza ou azul caso já tenha sido digitada)
@@ -157,7 +162,7 @@ document.addEventListener("keydown", function (event) {
   if (gameOver)
     countLetter = 0;
 
-  if (droppingWords.length > 0) {
+  if (droppingWords.length > 0 && !gameOver) {
     let currentWordIndex;
 
     for (let i = 0; i < droppingWords.length; i++) {
@@ -191,8 +196,8 @@ document.addEventListener("keydown", function (event) {
   }
 });
 
+// Iniciar e terminar o jogo (mudar texto do button e zerar scores)
 function playStop() {
-  // Iniciar e terminar o jogo (respectivamente)
   if (gameOver) {
     document.getElementById("playStopButton").textContent = "Stop";
     gameOver = false;
