@@ -52,46 +52,46 @@ const words = [
 let c = document.getElementById("gameboard");
 let ctx = c.getContext("2d");
 
-const img = new Image();
-const scale = 0.3;
-const spriteWidth = 256;
-const spriteHeight = 256;
-const scaledWidth = scale * spriteWidth;
-const scaledHeight = scale * spriteHeight;
-img.src = "SpriteWizard.png";
-img.onload = function() {
-  init();
-};
+// const img = new Image();
+// const scale = 0.3;
+// const spriteWidth = 256;
+// const spriteHeight = 256;
+// const scaledWidth = scale * spriteWidth;
+// const scaledHeight = scale * spriteHeight;
+// img.src = "SpriteWizard.png";
+// img.onload = function() {
+//   init();
+// };
 
-function drawFrame(frameX, frameY, canvasX, canvasY) {
-  ctx.drawImage(img,
-                frameX * spriteWidth, frameY * spriteHeight, spriteWidth, spriteHeight,
-                canvasX, canvasY, scaledWidth, scaledHeight);
-}
+// function drawFrame(frameX, frameY, canvasX, canvasY) {
+//   ctx.drawImage(img,
+//                 frameX * spriteWidth, frameY * spriteHeight, spriteWidth, spriteHeight,
+//                 canvasX, canvasY, scaledWidth, scaledHeight);
+// }
 
 
-const cycleLoop = [0,1,2,1];
-let currentLoopIndex = 0;
-let frameCount = 0;
+// const cycleLoop = [0,1,2,1];
+// let currentLoopIndex = 0;
+// let frameCount = 0;
 
-function step() {
-  frameCount++;
-  if (frameCount < 3) {
-    window.requestAnimationFrame(step);
-    return;
-  }
-  frameCount = 0;
-  ctx.clearRect(0, 0, wCanvas, hCanvas);
-  drawFrame(cycleLoop[currentLoopIndex], 0, 0, 0);
-  currentLoopIndex++;
-  if (currentLoopIndex >= cycleLoop.length) {
-    currentLoopIndex = 0;
-  }
-  window.requestAnimationFrame(step);
-}
-function init() {
-  window.requestAnimationFrame(step);
-}
+// function step() {
+//   frameCount++;
+//   if (frameCount < 3) {
+//     window.requestAnimationFrame(step);
+//     return;
+//   }
+//   frameCount = 0;
+//   ctx.clearRect(0, 0, wCanvas, hCanvas);
+//   drawFrame(cycleLoop[currentLoopIndex], 0, 0, 0);
+//   currentLoopIndex++;
+//   if (currentLoopIndex >= cycleLoop.length) {
+//     currentLoopIndex = 0;
+//   }
+//   window.requestAnimationFrame(step);
+// }
+// function init() {
+//   window.requestAnimationFrame(step);
+// }
 
 const wCanvas = c.width;
 const hCanvas = c.height;
