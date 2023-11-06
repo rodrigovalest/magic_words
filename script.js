@@ -47,73 +47,96 @@ const words = [
   "orquidea",
 ];
 
-
-
 let c = document.getElementById("gameboard");
 let ctx = c.getContext("2d");
-
-// const img = new Image();
-// const scale = 0.3;
-// const spriteWidth = 256;
-// const spriteHeight = 256;
-// const scaledWidth = scale * spriteWidth;
-// const scaledHeight = scale * spriteHeight;
-// img.src = "SpriteWizard.png";
-// img.onload = function() {
-//   init();
-// };
-
-// function drawFrame(frameX, frameY, canvasX, canvasY) {
-//   ctx.drawImage(img,
-//                 frameX * spriteWidth, frameY * spriteHeight, spriteWidth, spriteHeight,
-//                 canvasX, canvasY, scaledWidth, scaledHeight);
-// }
-
-
-// const cycleLoop = [0,1,2,1];
-// let currentLoopIndex = 0;
-// let frameCount = 0;
-
-// function step() {
-//   frameCount++;
-//   if (frameCount < 3) {
-//     window.requestAnimationFrame(step);
-//     return;
-//   }
-//   frameCount = 0;
-//   ctx.clearRect(0, 0, wCanvas, hCanvas);
-//   drawFrame(cycleLoop[currentLoopIndex], 0, 0, 0);
-//   currentLoopIndex++;
-//   if (currentLoopIndex >= cycleLoop.length) {
-//     currentLoopIndex = 0;
-//   }
-//   window.requestAnimationFrame(step);
-// }
-// function init() {
-//   window.requestAnimationFrame(step);
-// }
 
 const wCanvas = c.width;
 const hCanvas = c.height;
 
-
 const droppingWords = [];
-let gameOver = false;
 let lastTypedWord;
+
+let gameOver = true;
 let tempo = 0;
+
+let score = 0;
+let errors = 0;
+
 const character = {
   x: wCanvas / 2,
   y: hCanvas - 40,
   playing: false
 }
-ctx.fillRect(character.x, character.y, 40, 40);
+
+const img = new Image();
+const scale = 0.3;
+const spriteWidth = 256;
+const spriteHeight = 256;
+const scaledWidth = scale * spriteWidth;
+const scaledHeight = scale * spriteHeight;
+img.src = "SpriteWizard.png";
+img.onload = function() {
+  init();
+};
+
+function drawFrame(frameX, frameY, canvasX, canvasY) {
+  ctx.drawImage(img,
+                frameX * spriteWidth, frameY * spriteHeight, spriteWidth, spriteHeight,
+                canvasX, canvasY -35, scaledWidth, scaledHeight);
+}
+
+const cycleLoop = [0,1,2,1];
+let currentLoopIndex = 0;
+let frameCount = 3;
+
+function step() {
+  frameCount++;
+  if (frameCount < 3) {
+    window.requestAnimationFrame(step);
+    return;
+  }
+  frameCount = 0;
+  ctx.clearRect(character.x, character.y-35, scaledWidth, scaledHeight);
+  drawFrame(cycleLoop[currentLoopIndex], 0, character.x, character.y);
+  currentLoopIndex++;
+  if (currentLoopIndex >= cycleLoop.length) {
+    currentLoopIndex = 0;
+  }
+  window.requestAnimationFrame(step);
+}
+// function init() {
+//   window.requestAnimationFrame(step);
+// }
 
 function generateDropping() {
-  if (gameOver) {
+  if (gameOver) {  
+    droppingWords.length = 0;
+    lastTypedWord = null;
+    tempo = 0;
+
+    character.playing = false;
+    character.x = wCanvas / 2;
+    character.y = hCanvas - 40;
+    
     ctx.clearRect(0, 0, wCanvas, hCanvas);
     return;
   }
 
+  if (tempo%5 == 0) {
+    currentLoopIndex ++;
+    if (currentLoopIndex >= cycleLoop.length) {
+      currentLoopIndex = 0;
+    }
+  }
+
+  // Desenhar o local padrão do personagem
+  if (!character.playing)
+  {
+    ctx.clearRect(character.x, character.y-35, scaledWidth, scaledHeight);
+    //ctx.fillRect(character.x, character.y, 40, 40);
+    drawFrame(cycleLoop[currentLoopIndex], 0, character.x , character.y);
+    //window.requestAnimationFrame(step);
+  }
   // Para cada palavra caindo...
   droppingWords.forEach((word, index) => {
     // Remover palavra da array se ela chegar no final
@@ -121,31 +144,31 @@ function generateDropping() {
       droppingWords.splice(index, 1);
     }
 
-    // Terminar o jogo
-    if ((character.y >= (hCanvas - 40) && character.playing) || (index == 0 && word.y >= (hCanvas - 10))) {
-      droppingWords.length = 0;
-      character.playing = false;
-      tempo = 0;
-      countLetter = 0;
-      lastTypedWord = null;
-      gameOver = true;
-
-      ctx.clearRect(0, 0, wCanvas, hCanvas);
-    }
-
     // Fazer personagem acompanhar a queda da ultima palavra digitada
     if (word == lastTypedWord) {
-      ctx.clearRect(character.x, character.y, 40, 40);
+      ctx.clearRect(character.x, character.y-35, scaledWidth, scaledHeight);
+      //drawFrame(0, 0, character.x, character.y);
       character.y = word.y - 65;
-      character.x = word.x - 10;
-      ctx.fillRect(character.x, character.y, 40, 40);
+      character.x = word.x - 7;
+      //ctx.fillRect(character.x, character.y, 40, 40);
+      
+      drawFrame(cycleLoop[currentLoopIndex], 0, character.x , character.y);
+      //window.requestAnimationFrame(step);
     }
 
+    // Terminar o jogo (se o personagem cair no fim do mapa ou se ele não digitar nada no começo do jogo)
+    if ((character.y >= (hCanvas - 40) && character.playing) || (index == 0 && word.y >= (hCanvas - 10) && !character.playing)) {
+      playStop();
+      gameOver = true;
+      ctx.clearRect(0, 0, wCanvas, hCanvas);
+      return;
+    }
+  
     // Fazer queda da palavra (e sua caixa cinza ou azul caso já tenha sido digitada)
     ctx.clearRect(word.x - 10, word.y + 10, word.width + 25, -35);
     word.y++;
-
-    word.typed == false ? ctx.fillStyle = "gray" : ctx.fillStyle = "blue";
+    
+    word.typed == false ? ctx.fillStyle = "gray" : ctx.fillStyle = "blue"; 
     ctx.fillRect(word.x - 10, word.y + 10, word.width + 20, -35);
 
     ctx.fillStyle = "black";
@@ -165,14 +188,14 @@ function generateDropping() {
     }
     let y = 0;
     let word = words[getRandomInt(0, words.length - 1)];;
-
+    
     ctx.fillStyle = "black";
     ctx.font = "16px Arial";
     ctx.fillText(word, x, y);
-
+    
     let width = ctx.measureText(word).width;
     let typed = false;
-
+    
     droppingWords.push({ x, y, width, word, typed });
 
     ctx.fillStyle = "gray";
@@ -191,29 +214,56 @@ let countLetter = 0;
 document.addEventListener("keydown", function (event) {
   const keyPressed = event.key.toLowerCase();
 
-  if (droppingWords.length > 0) {
-    let currentWord;
+  if (gameOver)
+    countLetter = 0;
+
+  if (droppingWords.length > 0 && !gameOver) {
+    let currentWordIndex;
 
     for (let i = 0; i < droppingWords.length; i++) {
       if (!droppingWords[i].typed) {
-        currentWord = droppingWords[i];
+        currentWordIndex = i;
         break;
       }
     }
 
-    if (currentWord) {
-      const nextLetter = currentWord.word.charAt(countLetter);
+    const nextWord = droppingWords[currentWordIndex];
+    const nextLetter = nextWord.word.charAt(countLetter);
 
-      if (keyPressed === nextLetter) {
-        countLetter++;
+    if (keyPressed === nextLetter) {
+      countLetter++;
+      
+      score++;
+      document.getElementById("score").textContent = score;
 
-        if (countLetter === currentWord.word.length) {
-          countLetter = 0;
-          currentWord.typed = true;
-          lastTypedWord = currentWord;
-          character.playing = true;
-        }
+      if (countLetter === nextWord.word.length) {
+        countLetter = 0;
+        lastTypedWord = nextWord;
+        character.playing = true;
+
+        nextWord.typed = true;
+        droppingWords[currentWordIndex] = nextWord;
       }
+    } else {
+      errors++;
+      document.getElementById("errors").textContent = errors;
     }
   }
 });
+
+// Iniciar e terminar o jogo (mudar texto do button e zerar scores)
+function playStop() {
+  if (gameOver) {
+    document.getElementById("playStopButton").textContent = "Stop";
+    gameOver = false;
+    generateDropping();
+
+    score = 0;
+    document.getElementById("score").textContent = score;
+    errors = 0;
+    document.getElementById("errors").textContent = errors;
+  } else {
+    document.getElementById("playStopButton").textContent = "Play";
+    gameOver = true;
+  }
+}
