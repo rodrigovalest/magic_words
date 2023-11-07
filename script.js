@@ -68,48 +68,46 @@ const character = {
   playing: false
 }
 
-const img = new Image();
-const scale = 0.3;
-const spriteWidth = 256;
-const spriteHeight = 256;
-const scaledWidth = scale * spriteWidth;
-const scaledHeight = scale * spriteHeight;
-img.src = "SpriteWizard.png";
-img.onload = function() {
-  init();
-};
+const Bg = new Image();
+Bg.src = "url(pxArt.png)";
 
-function drawFrame(frameX, frameY, canvasX, canvasY) {
-  ctx.drawImage(img,
-                frameX * spriteWidth, frameY * spriteHeight, spriteWidth, spriteHeight,
-                canvasX, canvasY -35, scaledWidth, scaledHeight);
+const SpriteWitchIdle = new Image();
+SpriteWitchIdle.src = "images/SpriteWitchIdle.png";
+ctx.drawImage(SpriteWitchIdle,0,0,32,42,0,0,32*2,42*2);
+
+
+const SpriteWitchDamage = new Image();
+SpriteWitchDamage.src = "images/SpriteWitchDamage.png";
+ctx.drawImage(SpriteWitchDamage,0,0,32,42,0,0,32*2,42*2);
+
+const SpriteWitchCharge = new Image();
+SpriteWitchCharge.src = "images/SpriteWitchCharge.png";
+ctx.drawImage(SpriteWitchCharge,0,0,48,48,0,0,32*2.5,42*2.5);
+
+const spriteWitchWidth = 32;
+const spriteWitchHeight = 48;
+const spriteWitchChargeSize = 48;
+
+const witchXScale = spriteWitchWidth * 2.5;
+const witchYScale = spriteWitchHeight * 2.5;
+
+function drawWitchFrame(witchSprite, frameY, canvasX, canvasY) {
+  ctx.drawImage(witchSprite, 0, frameY * spriteWitchHeight, 
+    spriteWitchWidth, spriteWitchHeight, canvasX, canvasY, witchXScale, witchYScale);
 }
+function drawWitchChargeFrame(frameY, canvasX, canvasY) {
+  ctx.drawImage(SpriteWitchCharge, 0, frameY * spriteWitchChargeSize, 
+    spriteWitchChargeSize, spriteWitchChargeSize, canvasX, canvasY, witchXScale, witchYScale);
+}
+const cloudSprite = new Image();
+cloudSprite.src = "images/cloudSprite.png";
 
-const cycleLoop = [0,1,2,1];
+let cycleLoop = 5;
 let currentLoopIndex = 0;
 let frameCount = 3;
 
-function step() {
-  frameCount++;
-  if (frameCount < 3) {
-    window.requestAnimationFrame(step);
-    return;
-  }
-  frameCount = 0;
-  ctx.clearRect(character.x, character.y-35, scaledWidth, scaledHeight);
-  drawFrame(cycleLoop[currentLoopIndex], 0, character.x, character.y);
-  currentLoopIndex++;
-  if (currentLoopIndex >= cycleLoop.length) {
-    currentLoopIndex = 0;
-  }
-  window.requestAnimationFrame(step);
-}
-// function init() {
-//   window.requestAnimationFrame(step);
-// }
-
 function generateDropping() {
-  if (gameOver) {  
+  if (gameOver) {
     droppingWords.length = 0;
     lastTypedWord = null;
     tempo = 0;
@@ -117,42 +115,50 @@ function generateDropping() {
     character.playing = false;
     character.x = wCanvas / 2;
     character.y = hCanvas - 40;
-    
+
     ctx.clearRect(0, 0, wCanvas, hCanvas);
     return;
   }
 
-  if (tempo%5 == 0) {
-    currentLoopIndex ++;
-    if (currentLoopIndex >= cycleLoop.length) {
+  if (tempo % 5 == 0) {
+    currentLoopIndex++;
+    if (currentLoopIndex >= cycleLoop) {
       currentLoopIndex = 0;
     }
   }
 
   // Desenhar o local padrão do personagem
-  if (!character.playing)
-  {
-    ctx.clearRect(character.x, character.y-35, scaledWidth, scaledHeight);
+  if (!character.playing) {
+    cycleLoop = 5;
+    //ctx.drawImage(SpriteWitchCharge,0,48*2,48,48,0,0,32*2.5,42*2.5);
+    //ctx.clearRect(character.x, character.y - 35, scaledWidth, scaledHeight);
+    ctx.clearRect(character.x, character.y - 70, witchXScale, witchYScale);
     //ctx.fillRect(character.x, character.y, 40, 40);
-    drawFrame(cycleLoop[currentLoopIndex], 0, character.x , character.y);
+    //drawPlayerFrame(cycleLoop[currentLoopIndex], 0, character.x, character.y);
+    drawWitchFrame(SpriteWitchIdle,currentLoopIndex,character.x, character.y - 70);
     //window.requestAnimationFrame(step);
   }
   // Para cada palavra caindo...
   droppingWords.forEach((word, index) => {
     // Remover palavra da array se ela chegar no final
     if (word.y > (hCanvas + 40)) {
+      ctx.fillRect(word.x - 10, word.y + 10, word.width + 20, -35);
       droppingWords.splice(index, 1);
     }
 
     // Fazer personagem acompanhar a queda da ultima palavra digitada
     if (word == lastTypedWord) {
-      ctx.clearRect(character.x, character.y-35, scaledWidth, scaledHeight);
+      cycleLoop=4;
+      //ctx.clearRect(character.x, character.y - 35, scaledWidth, scaledHeight);
       //drawFrame(0, 0, character.x, character.y);
+      ctx.clearRect(character.x, character.y - 70, witchXScale, witchYScale);
       character.y = word.y - 65;
       character.x = word.x - 7;
       //ctx.fillRect(character.x, character.y, 40, 40);
+
+      //drawPlayerFrame(cycleLoop[currentLoopIndex], 0, character.x, character.y);
       
-      drawFrame(cycleLoop[currentLoopIndex], 0, character.x , character.y);
+      drawWitchChargeFrame(currentLoopIndex, character.x, character.y -70)
       //window.requestAnimationFrame(step);
     }
 
@@ -163,13 +169,16 @@ function generateDropping() {
       ctx.clearRect(0, 0, wCanvas, hCanvas);
       return;
     }
-  
+
     // Fazer queda da palavra (e sua caixa cinza ou azul caso já tenha sido digitada)
     ctx.clearRect(word.x - 10, word.y + 10, word.width + 25, -35);
+    ctx.clearRect(word.x - 10, word.y - 64, 64, 38);
     word.y++;
-    
-    word.typed == false ? ctx.fillStyle = "gray" : ctx.fillStyle = "blue"; 
+    //ctx.drawImage(cloudSprite,0,0,221,93,word.x - 10,word.y + 10,30,128);
+
+    word.typed == false ? ctx.fillStyle = "gray" : ctx.fillStyle = "blue";
     ctx.fillRect(word.x - 10, word.y + 10, word.width + 20, -35);
+    ctx.drawImage(cloudSprite,0,0,221,93,word.x - 10,word.y - 64,64,38);
 
     ctx.fillStyle = "black";
     ctx.font = "16px Arial";
@@ -188,14 +197,14 @@ function generateDropping() {
     }
     let y = 0;
     let word = words[getRandomInt(0, words.length - 1)];;
-    
+
     ctx.fillStyle = "black";
     ctx.font = "16px Arial";
     ctx.fillText(word, x, y);
-    
+
     let width = ctx.measureText(word).width;
     let typed = false;
-    
+
     droppingWords.push({ x, y, width, word, typed });
 
     ctx.fillStyle = "gray";
@@ -213,6 +222,7 @@ generateDropping();
 let countLetter = 0;
 document.addEventListener("keydown", function (event) {
   const keyPressed = event.key.toLowerCase();
+  console.log(event);
 
   if (gameOver)
     countLetter = 0;
@@ -232,7 +242,7 @@ document.addEventListener("keydown", function (event) {
 
     if (keyPressed === nextLetter) {
       countLetter++;
-      
+
       score++;
       document.getElementById("score").textContent = score;
 
