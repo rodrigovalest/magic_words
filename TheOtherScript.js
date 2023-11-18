@@ -18,7 +18,7 @@ function playStop() {
 
         //Muda o Texto para stop
         document.getElementById("playStopButton").textContent = "Stop";
-        
+
         //Permite começar o jogo e Reseta o tempo
         gameOver = false;
         tempo = 0;
@@ -32,9 +32,14 @@ function playStop() {
         droppingWords.length = 0;
         typingWord = "";
         lastTypedWord = "";
+
         //Id - Modo de jogo onde so pode digitar a proxima linha de palavras
         // idcount = 0;
         // idcheck = 0;
+
+        //Reseta a velocidade das plataformas e a array das nuvens
+        platSpeed = 5;
+        cloudArray = [];
 
         //Reseta o score
         score = 0;
@@ -114,18 +119,74 @@ let lastTypedWord = "";
 
 //Seta a imagem de fundo
 const Bg = new Image();
-Bg.src = "images/night_background 1.png"
+Bg.src = "images/tower.png"
 //ctx.drawImage(Bg, 0, 0, wCanvas, hCanvas);
+
+const spaceBg = new Image();
+spaceBg.src = "images/SpaceBG.png";
+
+//Opacidade da BG - utilizado para fazer coisas aparecerem e a posicão iniciais das estrelas,sendo uma em cima da outra
+var bgOpacity = 0;
+var spaceBgY = [0, - hCanvas];
+
+//Variaveis de Cor e passos(utilizado quando que trocar entre varias cores)
+var red = 166, green = 191, blue = 207, steps = 1,
+    redInv = 0, greenInv = 255, blueInv = 255;
+
+//Funcão para mudar a cor um um valor da RGB e a outra que utiliza de variaveis para criar uma cor RGB
+function changeColor(color, increase) {
+    return increase ? color + 1 : color - 1;
+}
+function updateBackground(red, green, blue) {
+    ctx.fillStyle = 'rgb(' + red + ',' + green + ',' + blue + ')';
+}
 
 //Seta a imagem da nuvem
 const cloudSprite = new Image();
 cloudSprite.src = "images/cloudSprite.png";
 
-//Seta as variaveis da nuvem inicial onde o player começa o jogo E seu movimento
+//Seta as variaveis da situação onde o jogador ainda não saiu do chão/nuvem inicial , a posicão da nuvem inicial, e o seu movimento para baixo
 let onStarterPosition = true;
 let cloudX;
 let cloudY;
-let downCount = 0;
+let downCount = 3;
+
+//Seta a imagem da nuvem que fica passando no Background
+const cloudSpriteBG = new Image();
+cloudSpriteBG.src = "images/CloudBG.png";
+//ctx.drawImage(cloudSpriteBG, 0, 0, wCanvas, hCanvas);
+
+//Classe que é utilizada para Criar as instancias das nuvens do Background, tendo como variaveis
+//imageX, imageY, width, height: Temos varias nuvens dentro da imagem, essas variaveis serao utilizadas para escolehr qual sera utilizada
+//x,y,side : utilizada para a movimentacao dessas nuvens
+class Cloud {
+    constructor(imageX, imageY, width, height) {
+        this.imageX = imageX;
+        this.imageY = imageY;
+        this.width = width;
+        this.height = height;
+        this.x = 0;
+        this.y = 0;
+        this.side = 1;
+    }
+}
+
+//Arrays que apontam para as posicoes da imagem das nuvem para tirar cada nuvem individualmente e 
+//a outra array para guardar as futuras instancias das nuvens
+const cloudBGImg = [
+    [0, 0, 70, 50],
+    [70, 0, 70, 50],
+    [0, 50, 60, 30],
+    [60, 50, 60, 42],
+    [0, 80, 60, 50],
+    [60, 92, 60, 50],
+]
+let cloudArray = [];
+
+
+//Seta a imagem do Chao
+const groundSprite = new Image();
+groundSprite.src = "images/ground.png";
 
 //Seta a imagem da bruxinha parada
 const SpriteWitchIdle = new Image();
@@ -198,27 +259,148 @@ class classWord {
         this.y = y;
         this.typed = false;
         this.width = 0;
-        //this.id = id;
+        this.id = "";
         this.speed = speed;
         this.type = type;
         this.boxColor = "rgba(226, 221, 224, 0.7)";
         this.textColor = "black";
+        this.isPlayerOn = false;
     }
 }
+
+//Pre-seta 3 locais distantes entre si utilizados para a criação de plataformas, uma variavel utilizada para escolher o local
+//E a velocidade da plataforma
+const platPlaces = [wCanvas / 4, wCanvas / 2, wCanvas / 1.5];
+let platChoosePlace = 0;
+let platSpeed = 8;
 
 //Função principal do jogo, tem multiplas utilidades como:
 //Desenhar e animarno canvas todos os componentes
 //Criar e adicionar novas palavras na array wrds
 //Checar se o player Perdeu o jogo, está digitando
 function step() {
-
     //Limpa o Canvas e desenha o background
     ctx.clearRect(0, 0, wCanvas, hCanvas);
-    ctx.drawImage(Bg, 0, 0, wCanvas, hCanvas);
+
+    //Caso queira que a tela mude de cor constantemente
+    // switch (steps) {
+
+    //     case 1:
+    //         blue = changeColor(blue, true);
+    //         blueInv = changeColor(blueInv, false);
+    //         updateBackground(red, green, blue);
+    //         if (blue === 255) {
+    //             steps = 2;
+    //         }
+    //         break;
+
+    //     case 2:
+    //         red = changeColor(red, false);
+    //         redInv = changeColor(redInv, true);
+    //         updateBackground(red, green, blue);
+    //         if (red === 0) {
+    //             steps = 3;
+    //         }
+    //         break;
+
+    //     case 3:
+    //         green = changeColor(green, true);
+    //         greenInv = changeColor(greenInv, false);
+    //         updateBackground(red, green, blue);
+    //         if (green === 255) {
+    //             steps = 4;
+    //         }
+    //         break;
+
+    //     case 4:
+    //         blue = changeColor(blue, false);
+    //         blueInv = changeColor(blueInv, true);
+    //         updateBackground(red, green, blue);
+    //         if (blue === 0) {
+    //             steps = 5;
+    //         }
+    //         break;
+
+    //     case 5:
+    //         red = changeColor(red, true);
+    //         redInv = changeColor(redInv, false);
+    //         updateBackground(red, green, blue);
+    //         if (red === 255) {
+    //             steps = 6;
+    //         }
+    //         break;
+
+    //     case 6:
+    //         green = changeColor(green, false);
+    //         greenInv = changeColor(greenInv, true);
+    //         updateBackground(red, green, blue);
+    //         if (green === 0) {
+    //             steps = 1;
+    //         }
+    //         break;
+    // }
+
+    //Caso o Player chegue na pontuação 500, ele chega no espaço, ou seja, a cor de fundo que está num azul vai se transformando no preto
+    if (score >= 500) {
+        red = red >= 0 ? red - 1 : 0;
+        green = green >= 0 ? green - 1 : 0;
+        blue = blue >= 0 ? blue - 1 : 0;
+        updateBackground(red, green, blue);
+    } else {
+
+        //Caso não, a cor de fundo será um azul, e cada 6 segundos +/- cria uma nuvem aleatoria, joga um cara ou coroa para decidir
+        // Se a nuvem vai nascer em qual lado, e adicione ela na array que fará o processo de animar ela
+        updateBackground(166, 191, 207);
+        if (tempo % 350 == 0 && !onStarterPosition) {
+            let randomCloudSide = parseInt(Math.random() * 2);
+            let randomCloud = getRandomInt(0, 5);
+            let cloudObj = new Cloud(cloudBGImg[randomCloud][0], cloudBGImg[randomCloud][1], cloudBGImg[randomCloud][2],
+                cloudBGImg[randomCloud][3]);
+            if (randomCloudSide) {
+                cloudObj.x = -256;
+                cloudObj.side = 1;
+            } else {
+                cloudObj.x = wCanvas;
+                cloudObj.side = -1;
+            }
+            cloudArray.push(cloudObj);
+        }
+
+    }
+
+    //Quando o fundo Estiver preto, comece a desenhar as estrelas, fazendo elas aparecerem usando a opacidade
+    //Funciona tendo duas imagens, que ficam em ciclo descendo uma em cima da outra, se um chega no fim, volta para o começo
+    if (red <= 0 && green <= 0 && blue <= 0) {
+        bgOpacity = bgOpacity >= 1 ? 1 : bgOpacity + 0.01;
+        ctx.globalAlpha = bgOpacity;
+        ctx.drawImage(spaceBg, 0, 0, wCanvas, hCanvas, 0, spaceBgY[0], wCanvas, hCanvas);
+        ctx.drawImage(spaceBg, 0, 0, wCanvas, hCanvas, 0, spaceBgY[1], wCanvas, hCanvas);
+        spaceBgY[0] = spaceBgY[0] >= hCanvas ? -hCanvas : spaceBgY[0] += 1 / 5;
+        spaceBgY[1] = spaceBgY[1] >= hCanvas ? -hCanvas : spaceBgY[1] += 1 / 5;
+        ctx.globalAlpha = 1;
+    }
+
+    //Desenha o Fundo
+    ctx.fillRect(0, 0, wCanvas, hCanvas);
+
+    //Para cada Instacia de nuvem na array, crie uma nuvemBG,fazendo que ela vá para direita ou esquerda dependendo do valor de cloudInst.side
+    //e para baixo, caso chegue nas extremidades apague da array para parar de animar-la 
+    cloudArray.forEach((cloudInst, index) => {
+        ctx.drawImage(cloudSpriteBG, cloudInst.imageX, cloudInst.imageY, cloudInst.width, cloudInst.height,
+            (cloudInst.x), cloudInst.y - 128, 256, 128);
+        cloudInst.x += (0.5 * cloudInst.side);
+        cloudInst.y += (getRandomInt(1, 10) / 10);
+        if (cloudInst.y >= hCanvas + 60 || cloudInst.x >= wCanvas + 300 || cloudInst.x <= 0 - 300) {
+            cloudArray.splice(index, 1);
+        }
+    })
+
+    //Desenha o Background : Noite estrelada ou castelo
+    ctx.drawImage(Bg, 0, 0, wCanvas, hCanvas, wCanvas / 5, (-hCanvas * 1.3) + downCount / 3, wCanvas * 3, hCanvas * 3);
 
     //Se o jogo acabou,limpa a tela e sai da função
     if (gameOver) {
-        ctx.clearRect(0, 0, wCanvas, hCanvas);
+        ctx.clearRect(0, 0, wCanvas, hCanvas,);
         return;
     }
 
@@ -245,46 +427,61 @@ function step() {
         drawWitchChargeFrame(currentLoopIndex, character.x, character.y - 105);
     }
 
-    //Quando o tempo chegar num tempo especifico, crie entre 1 e 3 word, com x,speed e tipo aleatorio
+    //Quando o tempo chegar num tempo especifico, crie entre 1 e 3 word, com tipo aleatorio, velocidade e local
     //e adicione ela na array wrds, depois cheque o tipo dela e mude as suas cores (e textos)
     if (tempo % 300 == 0) {
+
+        //Há tres possiveis locais onde uma plataforma pode cair, para que cada uma não fique uma em cima da outra
+        //No começo do jogo um desses locais é escolhido como o local da plaforma de inicio ...
+        platChoosePlace = getRandomInt(0, 2);
+
         for (let j = 0; j < getRandomInt(1, 3); j++) {
-            let word = new classWord(words[getRandomInt(0, words.length - 1)], getRandomInt(20, 480), 0, getRandomInt(5, 10) / 10,
+
+            //Cria uma instancia de uma palavra
+            let word = new classWord(words[getRandomInt(0, words.length - 1)], platPlaces[platChoosePlace], 0, platSpeed / 10,
                 types[getRandomInt(0, types.length)]);
-            word.width = ctx.measureText(word.word).width;
+
+            //A cada ciclo,vai aumentando a velocidade que as palavras vão diminuindo em 0.1
+            if (platSpeed <= 20) {
+                platSpeed += 0.1;
+            }
+
+            //... E ja que podem ser criados até 3 plataformas,o seguite codigo funciona para fazer um ciclo, caso aconteça
+            //que seja criado tres plataformas, os tres locais serão utilizados
+            platChoosePlace = platChoosePlace >= 2 ? 0 : platChoosePlace + 1;
+
+            //Switch que funciona para setar os as palavras de algumas plataformas, como tambem as cores dos textos das plataformas
             switch (word.type) {
+
+                //Em caso que mudam a palavra, afetam diretamente a palavra
                 case "Reverse":
                     word.word = invert(word.word);
-                    word.boxColor = "Black";
-                    word.textColor = "White";
+                    word.textColor = "Maroon";
                     break;
                 case "NoVogals":
                     word.word = word.word.replace(/[aeiou]/gi, '');
-                    word.boxColor = "green";
-                    word.textColor = "blue";
+                    word.textColor = "purple";
                     break;
+
                 case "Death":
-                    word.boxColor = "red";
-                    word.textColor = "black";
+                    word.textColor = "red";
                     break;
                 case "+1":
-                    word.boxColor = "white";
                     word.textColor = "green";
                     break;
                 case "2x":
-                    word.boxColor = "yellow";
-                    word.textColor = "black";
+                    word.textColor = "SlateGray";
                     break;
                 case "Shield":
-                    word.boxColor = "lightblue";
-                    word.textColor = "gray";
+                    word.textColor = "deeppink";
                     break;
                 default:
                     break;
             }
 
+            //Mede o tamanho da palavra para ser escrita no canvas e a palavra é adicionada na array para ser animada no jogo
+            word.width = ctx.measureText(word.word).width;
             droppingWords.push(word);
-            console.log(droppingWords);
         }
         //idcount++;
     }
@@ -297,13 +494,7 @@ function step() {
             ctx.fillRect(word.x - 10, word.y + 10, word.width + 20, -35);
             droppingWords.splice(index, 1);
             console.log("Deleted");
-            //E se ela não tinha sido digitada, acabe com o jogo - Modo Hard/Impossivel - Outro modo de jogo
-            // if (word.typed == false) {
-            //     playStop();
-            //     gameOver = true;
-            //     ctx.clearRect(0, 0, wCanvas, hCanvas);
-            //     return;
-            // }
+
         } else {
 
             //Se ela ainda está no jogo, faz ela cair pouco a pouco, e Desenhe a nuvem em baixo da palavra
@@ -313,7 +504,7 @@ function step() {
             //Se a palavra ainda não foi digitada, desenhe...
             if (word.typed == false) {
                 //Um retangulo
-                ctx.fillStyle = word.boxColor;
+                ctx.fillStyle = "lightgray";
                 ctx.fillRect(word.x - 15, word.y + 6, word.width + 30, -25);
 
                 //A word
@@ -325,7 +516,7 @@ function step() {
                 ctx.fillStyle = "red";
                 ctx.font = "16px Arial";
                 ctx.fillText(typingWord, word.x, word.y);
-            } 
+            }
         }
 
         //Se o power up for ativo
@@ -366,6 +557,7 @@ function step() {
         case "Shield":
             activatePower = true;
     }
+
     //Se o jogador chegou no na parte debaixo do canvas ou digitou a palavra que mata, ele perde e a tela é limpada
     if (character.y > (hCanvas + 60) || lastTypedWord.type == "Death") {
 
@@ -386,17 +578,21 @@ function step() {
     if (onStarterPosition) {
 
         //Desenha a nuvem e o coloca o player na parte de baixo no meio da tela
-        downCount = 0;
+        downCount = 3;
         character.x = wCanvas / 2 - spriteWitchWidth;
-        character.y = hCanvas - spriteWitchHeight;
+        character.y = hCanvas - 70;
         cloudX = character.x;
         cloudY = character.y;
-        ctx.drawImage(cloudSprite, 0, 0, 221, 93, character.x + spriteWitchWidth / 8, character.y, 64, 38);
+
+        //Nuvem ou chão
+        //ctx.drawImage(cloudSprite, 0, 0, 221, 93, character.x + spriteWitchWidth / 8, character.y, 64, 38);
+        ctx.drawImage(groundSprite, 0, 0, 600, 90, -20, hCanvas - 90, wCanvas + 80, 90);
 
     } else if (!onStarterPosition && cloudY + (downCount / 3) < (hCanvas + 10)) {
 
-        //Se não comece a levar a nuvem para baixo e desenhar coloca o player na nuvem no qual ele digitou
-        ctx.drawImage(cloudSprite, 0, 0, 221, 93, cloudX + spriteWitchWidth / 8, cloudY + downCount / 3, 64, 38);
+        //Se não comece a levar a nuvem para baixo e desenhar coloca o player na nuvem no qual ele digitou  //Nuvem ou chão
+        //ctx.drawImage(cloudSprite, 0, 0, 221, 93, cloudX + spriteWitchWidth / 8, cloudY + downCount / 3, 64, 38);
+        ctx.drawImage(groundSprite, 0, 0, 600, 90, -20, hCanvas - 90 + downCount / 3, wCanvas + 80, 90);
         downCount++;
         character.y = lastTypedWord.y + 6;
         character.x = lastTypedWord.x - 20 + ((lastTypedWord.width - 30) / 2);
@@ -405,6 +601,7 @@ function step() {
         //E se a nuvem ja sumiu, só coloca o player na nuvem no qual ele digitou
         character.y = lastTypedWord.y + 6;
         character.x = lastTypedWord.x - 20 + ((lastTypedWord.width - 30) / 2);
+        downCount++;
     }
 
     //Tempo do jogo avança e Recomeça essa função
@@ -427,11 +624,10 @@ document.addEventListener("keypress", function (event) {
 
     //Adiciona essa letra na ultima posição da string da palavra que esta sendo digitada
     typingWord += keyPressed;
-    //console.log(typingWord);
 
     //Se a array wrds não estiver vazia e o jogo estiver rodando
     if (droppingWords.length >= 0 && !gameOver) {
-        
+
         //Para cada item da array
         for (let k = 0; k < droppingWords.length; k++) {
             //console.log(idcheck);
@@ -447,6 +643,11 @@ document.addEventListener("keypress", function (event) {
                 //Ja que ele ira mudar de posicao, ele nao esta mais na posicao inicial
                 typingWord = "";
                 droppingWords[k].typed = true;
+                console.log(lastTypedWord);
+                if (lastTypedWord != "" || lastTypedWord != null || lastTypedWord != undefined) {
+                    console.log(lastTypedWord, lastTypedWord.speed);
+                    lastTypedWord.speed = 10;
+                }
                 lastTypedWord = droppingWords[k];
                 onStarterPosition = false;
 
@@ -483,12 +684,12 @@ document.addEventListener("keypress", function (event) {
         // }
     }
 });
+
 //Caso o player digite "backspace", apague a ultima letra da palavra que está sendo digitada
 document.addEventListener("keydown", function (event) {
     let Backkey = event.key.toLowerCase();
     if (Backkey == "backspace") {
         typingWord = typingWord.slice(0, -1);
     }
-    //console.log(typingWord);
 });
 
