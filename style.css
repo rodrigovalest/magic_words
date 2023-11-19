@@ -5,6 +5,8 @@
 
 body, html {
   height: 100%;
+  background: url('https://www.lexaloffle.com/gfx/p8tv_header.png') center center / cover no-repeat;
+  background-size: 7200px 803px;
 }
 
 main {
@@ -15,11 +17,56 @@ main {
 }
 
 #gameboard {
-  border-width: 3px;
-  border-color: black;
-  border-style: solid;
+  /* border-width: 3px;
+  border-color: red;
+  border-style: solid; */
+  position: absolute;
+  top: 55.4%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
 }
 
+#doodle {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(-130%, -70%);
+  width: 300px;
+}
+
+#window {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(140%, -70%);
+  width: 600px;
+}
+
+#startButton {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(500%, 1325%);
+  width: 60px;
+  padding: 10px;
+  background-color: red;
+}
+
+#playStopButtonID {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(-200%, 500%);
+  z-index: 10;
+}
+#playStopButtonMultiple {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(200%, 500%);  
+  z-index: 10;
+}
 /* Mate Animation */
 /* .wizard {
   width: 256px;

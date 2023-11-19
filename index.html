@@ -7,14 +7,15 @@
     <title>Sketch</title>
 </head>
 <body>
-    <main>
-        <canvas id="gameboard" height="600" width="600" ></canvas>
-        <div>
-            <p>Pontuação: <span id="score">0</span></p>
-            <p>Erros: <span id="errors">0</span></p>
-            <button id="playStopButton" onclick="playStop()">Play</button>
-        </div>
-    </main>
+    <div>
+        <p>Pontuação: <span id="score">0</span></p>
+        <button id="playStopButtonID" onclick="gameOverStep()" style="display: none;">Play ID</button>
+        <button id="playStopButtonMultiple" onclick="playMultiple()" style="display: none;">Play Multiple</button>
+    </div>
+    <button id="startButton" onclick="startTv()"></button>
+    <img src="images/doodleJumpFrame.png" alt="" id="doodle">
+    <img src="images/Window.png" alt="" id="window">
+    <canvas id="gameboard" class="crt" height="515" width="515" p></canvas>
     <script src="TheOtherScript.js"></script>
 </body>
 </html>

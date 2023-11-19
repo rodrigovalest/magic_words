@@ -10,14 +10,130 @@ function invert(s) {
     return s.split("").reverse().join("");
 }
 
+function startTv() {
+    if (tvOn) {
+        document.getElementById("startButton").style.backgroundColor = "red";
+        tvOn = false;
+        gameOver = true;
+    } else {
+        document.getElementById("startButton").style.backgroundColor = "lightgreen";
+        tvOn = true;
+        TitleScreenStep();
+    }
+}
+
+function TitleScreenStep() {
+    ctx.clearRect(0, 0, wCanvas, hCanvas);
+    updateBackground(166, 191, 207);
+    ctx.fillRect(0, 0, wCanvas, hCanvas);
+    ctx.drawImage(Bg, 0, 0, wCanvas, hCanvas, wCanvas / 4, (-hCanvas) + downCount / 3 + 10, wCanvas * 2, hCanvas * 2);
+    ctx.drawImage(groundSprite, 0, 0, 600, 90, -20, hCanvas - 90, wCanvas + 80, 90);
+    ctx.fillStyle = "black";
+    ctx.font = "80px Papyrus";
+    ctx.fillText("Magic Words", 28, hCanvas / 3 + 3);
+    ctx.fillStyle = "white";
+    ctx.font = "80px Papyrus";
+    ctx.fillText("Magic Words", 23, hCanvas / 3);
+
+    if (!tvOn) {
+        ctx.clearRect(0, 0, wCanvas, hCanvas);
+        document.getElementById("playStopButtonID").style.display = "none";
+        document.getElementById("playStopButtonMultiple").style.display = "none";
+        return;
+    } else {
+        document.getElementById("playStopButtonID").style.display = "block";
+        document.getElementById("playStopButtonMultiple").style.display = "block";
+    }
+    if (!gameOver) {
+        requestAnimationFrame(TitleScreenStep);
+    }
+
+}
+
+function gameOverStep() {
+    gameOver = true
+    ctx.clearRect(0, 0, wCanvas, hCanvas);
+    console.log("gameOver")
+    if (score >= 500) {
+        red = red >= 0 ? red - 1 : 0;
+        green = green >= 0 ? green - 1 : 0;
+        blue = blue >= 0 ? blue - 1 : 0;
+        updateBackground(red, green, blue);
+    } else {
+
+        //Caso não, a cor de fundo será um azul, e cada 6 segundos +/- cria uma nuvem aleatoria, joga um cara ou coroa para decidir
+        // Se a nuvem vai nascer em qual lado, e adicione ela na array que fará o processo de animar ela
+        updateBackground(166, 191, 207);
+        if (tempo % 350 == 0 && !onStarterPosition) {
+            let randomCloudSide = parseInt(Math.random() * 2);
+            let randomCloud = getRandomInt(0, 5);
+            let cloudObj = new Cloud(cloudBGImg[randomCloud][0], cloudBGImg[randomCloud][1], cloudBGImg[randomCloud][2],
+                cloudBGImg[randomCloud][3]);
+            if (randomCloudSide) {
+                cloudObj.x = -256;
+                cloudObj.side = 1;
+            } else {
+                cloudObj.x = wCanvas;
+                cloudObj.side = -1;
+            }
+            cloudArray.push(cloudObj);
+        }
+
+    }
+
+    //Quando o fundo Estiver preto, comece a desenhar as estrelas, fazendo elas aparecerem usando a opacidade
+    //Funciona tendo duas imagens, que ficam em ciclo descendo uma em cima da outra, se um chega no fim, volta para o começo
+    if (red <= 0 && green <= 0 && blue <= 0) {
+        bgOpacity = bgOpacity >= 1 ? 1 : bgOpacity + 0.01;
+        ctx.globalAlpha = bgOpacity;
+        ctx.drawImage(spaceBg, 0, 0, wCanvas, hCanvas, 0, spaceBgY[0], wCanvas, hCanvas);
+        ctx.drawImage(spaceBg, 0, 0, wCanvas, hCanvas, 0, spaceBgY[1], wCanvas, hCanvas);
+        spaceBgY[0] = spaceBgY[0] >= hCanvas ? -hCanvas : spaceBgY[0] += 1 / 5;
+        spaceBgY[1] = spaceBgY[1] >= hCanvas ? -hCanvas : spaceBgY[1] += 1 / 5;
+        ctx.globalAlpha = 1;
+    }
+
+    //Desenha o Fundo
+    ctx.fillRect(0, 0, wCanvas, hCanvas);
+
+    //Para cada Instacia de nuvem na array, crie uma nuvemBG,fazendo que ela vá para direita ou esquerda dependendo do valor de cloudInst.side
+    //e para baixo, caso chegue nas extremidades apague da array para parar de animar-la 
+    cloudArray.forEach((cloudInst, index) => {
+        ctx.drawImage(cloudSpriteBG, cloudInst.imageX, cloudInst.imageY, cloudInst.width, cloudInst.height,
+            (cloudInst.x), cloudInst.y - 128, 256, 128);
+        cloudInst.x += (0.5 * cloudInst.side);
+        cloudInst.y += (getRandomInt(1, 10) / 10);
+        if (cloudInst.y >= hCanvas + 60 || cloudInst.x >= wCanvas + 300 || cloudInst.x <= 0 - 300) {
+            cloudArray.splice(index, 1);
+        }
+    })
+
+    //Desenha o Background : Noite estrelada ou castelo
+    ctx.drawImage(Bg, 0, 0, wCanvas, hCanvas, wCanvas / 4, (-hCanvas) + downCount / 3 + 10, wCanvas * 2, hCanvas * 2);
+    ctx.drawImage(groundSprite, 0, 0, 600, 90, -20, hCanvas - 90 + downCount / 3, wCanvas + 80, 90);
+}
+
+function playId() {
+    idmode = true;
+    platCount = 3;
+    button = "playStopButtonID"
+    playStop("playStopButtonID", "Play ID");
+}
+
+function playMultiple() {
+    idmode = false;
+    platCount = getRandomInt(1, 3);
+    button = "playStopButtonMultiple"
+    playStop("playStopButtonMultiple", "Play Multiple");
+}
 // Iniciar e terminar o jogo (mudar texto do button e zerar scores)
-function playStop() {
+function playStop(btn, mode) {
 
     // Se o jogo estiver acabado/não começado e a função for chamado...
     if (gameOver) {
 
         //Muda o Texto para stop
-        document.getElementById("playStopButton").textContent = "Stop";
+        document.getElementById(btn).textContent = "Stop";
 
         //Permite começar o jogo e Reseta o tempo
         gameOver = false;
@@ -34,8 +150,8 @@ function playStop() {
         lastTypedWord = "";
 
         //Id - Modo de jogo onde so pode digitar a proxima linha de palavras
-        // idcount = 0;
-        // idcheck = 0;
+        idcount = 0;
+        idcheck = 0;
 
         //Reseta a velocidade das plataformas e a array das nuvens
         platSpeed = 5;
@@ -47,12 +163,17 @@ function playStop() {
         // errors = 0;
         // document.getElementById("errors").textContent = errors;
 
+        idmode = false;
+        platCount = getRandomInt(1, 3);
+        ctx.fillStyle = "lightgray";
+        ctx.font = "16px Arial";
+
         //Começa a rodar o jogo
         step();
     } else {
         //Se o jogo estiver rodando e a função for chamado - Limpa a tela,muda o Texto para play, e termina o jogo 
         ctx.clearRect(0, 0, wCanvas, hCanvas);
-        document.getElementById("playStopButton").textContent = "Play";
+        document.getElementById(btn).textContent = mode;
         gameOver = true;
     }
 }
@@ -100,6 +221,9 @@ const words = [
     "navio",
     "orquidea",
 ];
+
+let button = "";
+let tvOn = false;
 
 //Pega o ID e contexto do Canvas para serem Utilizados
 let c = document.getElementById("gameboard");
@@ -203,6 +327,11 @@ const SpriteWitchCharge = new Image();
 SpriteWitchCharge.src = "images/SpriteWitchCharge.png";
 //ctx.drawImage(SpriteWitchCharge, 0, 0, 48, 48, 0, 0, 32 * 2.5, 42 * 2.5);
 
+const SpriteWitchPuff = new Image();
+SpriteWitchPuff.src = "images/Puff.png";
+//ctx.drawImage(SpriteWitchCharge, 0, 0, 48, 48, 0, 0, 32 * 2.5, 42 * 2.5);
+
+
 //Seta as dimensoes da imagem da bruxinha.Sendo um especial para ela fazendo magia
 const spriteWitchWidth = 32;
 const spriteWitchHeight = 48;
@@ -223,6 +352,10 @@ function drawWitchChargeFrame(frameY, canvasX, canvasY) {
     ctx.drawImage(SpriteWitchCharge, 0, frameY * spriteWitchChargeSize,
         spriteWitchChargeSize, spriteWitchChargeSize, canvasX, canvasY, witchXScale, witchYScale);
 }
+function drawWitchPuff(frameX, canvasX, canvasY) {
+    ctx.drawImage(SpriteWitchPuff, frameX * 64, 0,
+        64, 72, canvasX, canvasY, 64 * 2, 72 * 2);
+}
 
 //Variaveis para animação de frames -Quantos frames por segundo;
 //Qual o tamanho da animação(Quantos frames tem); Frame atual da animação
@@ -237,8 +370,9 @@ const character = {
     playing: false
 }
 
-//let idcount = 0; //Usado Para outro tipo de jogo
-//let idcheck = 0;
+let idcount = 0; //Usado Para outro tipo de jogo
+let idcheck = 0;
+let idmode = false;
 
 //Variaveis para tipos de plataformas - Onelife: Mais uma vida; scoreMult & speedMult: Multiplicadores para pontuação e "gravidade";
 // powerupTimer: Temporizador para alguns powers; activatePower: Se um power esta ativo;
@@ -270,75 +404,27 @@ class classWord {
 
 //Pre-seta 3 locais distantes entre si utilizados para a criação de plataformas, uma variavel utilizada para escolher o local
 //E a velocidade da plataforma
-const platPlaces = [wCanvas / 4, wCanvas / 2, wCanvas / 1.5];
+const platPlaces = [(wCanvas / 3) - 70, (wCanvas / 2), (wCanvas / 1.5) + 64];
 let platChoosePlace = 0;
 let platSpeed = 8;
+let platCount = 0;
 
 //Função principal do jogo, tem multiplas utilidades como:
 //Desenhar e animarno canvas todos os componentes
 //Criar e adicionar novas palavras na array wrds
 //Checar se o player Perdeu o jogo, está digitando
 function step() {
+
+    if (!tvOn) {
+        ctx.clearRect(0, 0, wCanvas, hCanvas);
+        return;
+    }
+    document.getElementById("playStopButtonID").style.display = "none";
+    document.getElementById("playStopButtonMultiple").style.display = "none";
+    ctx.fillStyle = "lightgray";
+    ctx.font = "16px Arial";
     //Limpa o Canvas e desenha o background
     ctx.clearRect(0, 0, wCanvas, hCanvas);
-
-    //Caso queira que a tela mude de cor constantemente
-    // switch (steps) {
-
-    //     case 1:
-    //         blue = changeColor(blue, true);
-    //         blueInv = changeColor(blueInv, false);
-    //         updateBackground(red, green, blue);
-    //         if (blue === 255) {
-    //             steps = 2;
-    //         }
-    //         break;
-
-    //     case 2:
-    //         red = changeColor(red, false);
-    //         redInv = changeColor(redInv, true);
-    //         updateBackground(red, green, blue);
-    //         if (red === 0) {
-    //             steps = 3;
-    //         }
-    //         break;
-
-    //     case 3:
-    //         green = changeColor(green, true);
-    //         greenInv = changeColor(greenInv, false);
-    //         updateBackground(red, green, blue);
-    //         if (green === 255) {
-    //             steps = 4;
-    //         }
-    //         break;
-
-    //     case 4:
-    //         blue = changeColor(blue, false);
-    //         blueInv = changeColor(blueInv, true);
-    //         updateBackground(red, green, blue);
-    //         if (blue === 0) {
-    //             steps = 5;
-    //         }
-    //         break;
-
-    //     case 5:
-    //         red = changeColor(red, true);
-    //         redInv = changeColor(redInv, false);
-    //         updateBackground(red, green, blue);
-    //         if (red === 255) {
-    //             steps = 6;
-    //         }
-    //         break;
-
-    //     case 6:
-    //         green = changeColor(green, false);
-    //         greenInv = changeColor(greenInv, true);
-    //         updateBackground(red, green, blue);
-    //         if (green === 0) {
-    //             steps = 1;
-    //         }
-    //         break;
-    // }
 
     //Caso o Player chegue na pontuação 500, ele chega no espaço, ou seja, a cor de fundo que está num azul vai se transformando no preto
     if (score >= 500) {
@@ -396,11 +482,12 @@ function step() {
     })
 
     //Desenha o Background : Noite estrelada ou castelo
-    ctx.drawImage(Bg, 0, 0, wCanvas, hCanvas, wCanvas / 5, (-hCanvas * 1.3) + downCount / 3, wCanvas * 3, hCanvas * 3);
+    ctx.drawImage(Bg, 0, 0, wCanvas, hCanvas, wCanvas / 4, (-hCanvas) + downCount / 3 + 10, wCanvas * 2, hCanvas * 2);
 
     //Se o jogo acabou,limpa a tela e sai da função
     if (gameOver) {
-        ctx.clearRect(0, 0, wCanvas, hCanvas,);
+        //ctx.clearRect(0, 0, wCanvas, hCanvas,);
+        gameOverStep();
         return;
     }
 
@@ -435,7 +522,7 @@ function step() {
         //No começo do jogo um desses locais é escolhido como o local da plaforma de inicio ...
         platChoosePlace = getRandomInt(0, 2);
 
-        for (let j = 0; j < getRandomInt(1, 3); j++) {
+        for (let j = 0; j < platCount; j++) {
 
             //Cria uma instancia de uma palavra
             let word = new classWord(words[getRandomInt(0, words.length - 1)], platPlaces[platChoosePlace], 0, platSpeed / 10,
@@ -481,9 +568,10 @@ function step() {
 
             //Mede o tamanho da palavra para ser escrita no canvas e a palavra é adicionada na array para ser animada no jogo
             word.width = ctx.measureText(word.word).width;
+            word.id = idcount;
             droppingWords.push(word);
         }
-        //idcount++;
+        idcount++;
     }
 
     //Para cada item que tem na array wrds
@@ -544,6 +632,9 @@ function step() {
                 speedMult = 1;
             }
         }
+        if (lastTypedWord.id == word.id && word.typed != true && idmode) {
+            word.speed = 10;
+        }
     });
 
     //Se a ultima palavra que foi digitada, ou ligue o power up, ou ganhe uma vida
@@ -567,8 +658,9 @@ function step() {
             oneLife = false;
         } else {
             console.log("Acabou");
-            playStop();
-            gameOver = true;
+            //playStop();
+            //gameOver = true;
+            gameOverStep();
             ctx.clearRect(0, 0, wCanvas, hCanvas);
             return;
         }
@@ -633,55 +725,44 @@ document.addEventListener("keypress", function (event) {
             //console.log(idcheck);
             //Se A palavra que esta sendo digitada é igual a alguma palavra dentro da array & ela nao foi digitada
             if (typingWord == droppingWords[k].word && droppingWords[k].typed != true) {
-                //if (droppingWords[k].id == idcheck) { - Outro modo de jogo
+                if (idmode) {
+                    if (droppingWords[k].id == idcheck) { //- Outro modo de jogo
 
-                //Adiciona a pontuação
-                score += 10 * scoreMult;
-                document.getElementById("score").textContent = score;
+                        //Adiciona a pontuação
+                        score += 10 * scoreMult;
+                        document.getElementById("score").textContent = score;
 
-                //Reseta a string que esta sendo digitada,confirma que essa palavra foi digitada, essa palavra digitada é guardada
-                //Ja que ele ira mudar de posicao, ele nao esta mais na posicao inicial
-                typingWord = "";
-                droppingWords[k].typed = true;
-                console.log(lastTypedWord);
-                if (lastTypedWord != "" || lastTypedWord != null || lastTypedWord != undefined) {
-                    console.log(lastTypedWord, lastTypedWord.speed);
-                    lastTypedWord.speed = 10;
+                        //Reseta a string que esta sendo digitada,confirma que essa palavra foi digitada, essa palavra digitada é guardada
+                        //Ja que ele ira mudar de posicao, ele nao esta mais na posicao inicial
+                        typingWord = "";
+                        droppingWords[k].typed = true;
+                        console.log(lastTypedWord);
+                        if (lastTypedWord != "" || lastTypedWord != null || lastTypedWord != undefined) {
+                            console.log(lastTypedWord, lastTypedWord.speed);
+                            lastTypedWord.speed = 10;
+                        }
+                        lastTypedWord = droppingWords[k];
+                        onStarterPosition = false;
+
+                        idcheck++;
+                    }
+                } else {
+                    score += 10 * scoreMult;
+                    document.getElementById("score").textContent = score;
+                    typingWord = "";
+                    droppingWords[k].typed = true;
+
+                    console.log(lastTypedWord);
+                    if (lastTypedWord != "" || lastTypedWord != null || lastTypedWord != undefined) {
+                        console.log(lastTypedWord, lastTypedWord.speed);
+                        lastTypedWord.speed = 10;
+                    }
+
+                    lastTypedWord = droppingWords[k];
+                    onStarterPosition = false;
                 }
-                lastTypedWord = droppingWords[k];
-                onStarterPosition = false;
-
-                //idcheck++;
-                //}
             }
-
         }
-
-        //Modo Alternativo de Checagem para outro modo
-        // //Cria o index da palavra que está sendo checada se foi digitada ou não
-        // let currentWordIndex;
-        // //Checa item a item da wrds checando se ela foi digitada
-        // for (let i = 0; i < droppingWords.length; i++) {
-        //     if (!droppingWords[i].typed) {
-        //         //Se ela não foi...
-        //         currentWordIndex = i;
-        //         break;
-        //     }
-        // }
-        // //A proxima palavra a ser digitada será essa
-        // const nextWord = droppingWords[currentWordIndex];
-
-        // //Se a palavra que está sendo digitada for igual a palavra
-        // //que é a proxima a ser digitada
-        // if (typingWord == nextWord.word) {
-        //     //Reseta a string
-        //     typingWord = "";
-        //     //Essa word/palavra que é a proxima a ser digitada, diz para ela 
-        //     //que a mesma foi digitada
-        //     nextWord.typed = true;
-        //     //droppingWords[currentWordIndex] = nextWord;
-        //     onStarterPosition = true;
-        // }
     }
 });
 
@@ -692,4 +773,5 @@ document.addEventListener("keydown", function (event) {
         typingWord = typingWord.slice(0, -1);
     }
 });
+
 
