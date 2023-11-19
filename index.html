@@ -18,5 +18,27 @@
     <br>
     <a href="./scoreboard/mode1">scoreboard 1</a>
     <a href="./scoreboard/mode2">scoreboard 2</a>
+
+    <script>
+        fetch("http://localhost/web1-trabfinal/api/teste", {
+            method: 'GET',
+            headers: {
+                Authorization: "meuincriveltoken",
+                "Content-Type": "application/json",
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erro na requisiçao: ${response.status} ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('success:', data);
+        })
+        .catch(error => {
+            console.error('error:', error);
+        });
+    </script>
 </body>
 </html>
