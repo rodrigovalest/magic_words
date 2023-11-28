@@ -25,3 +25,5 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
 
     exit();
 }
+
+http_response_code(404);

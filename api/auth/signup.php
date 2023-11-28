@@ -1,0 +1,62 @@
+<?php
+
+require_once("../db/credentials.php");
+
+header("Access-Control-Allow-Origin: http://localhost");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Content-Type: application/json");
+
+if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
+    header("HTTP/1.1 200 OK");
+    exit();
+}
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $json = file_get_contents("php://input");
+    $data = json_decode($json);
+
+    if ($data === null) {
+        echo json_encode(["error" => "invalid data"]);
+        exit();
+    }
+
+    $username = htmlspecialchars(stripslashes(trim($data->username)));
+    $email = htmlspecialchars(stripslashes(trim($data->email)));
+    $password = htmlspecialchars(stripslashes(trim($data->password)));
+
+    if ($username === NULL || $email === NULL || $password === NULL) {
+        echo json_encode(["error" => "invalid data"]);
+        exit();
+    }
+
+    $conn = mysqli_connect($servername, $dbusername, $dbpassword, $dbname);
+    if (!$conn) {
+        die("Connection failed: " . mysqli_connect_error());
+    }
+
+    $username = mysqli_real_escape_string($conn, $username);
+    $email = mysqli_real_escape_string($conn, $email);
+    $password = mysqli_real_escape_string($conn, $password);
+
+    $sql = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$password');";
+    if (!mysqli_query($conn, $sql)) {
+        die("Error inserting new user");
+    }
+
+    echo json_encode(["message" => "success saving new user"]);
+    exit();
+}
+
+http_response_code(404);
+
+
+// $sql = "SELECT * FROM users";
+// $usersResult = mysqli_query($conn, $sql);
+
+// if ($usersResult === false) {
+//     echo json_encode(["error" => mysqli_error($conn)]);
+//     exit();
+// }
+
+// $users = mysqli_fetch_all($usersResult, MYSQLI_ASSOC);

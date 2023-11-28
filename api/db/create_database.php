@@ -2,7 +2,7 @@
 
 require('credentials.php');
 
-$conn = mysqli_connect($servername, $username, $password);
+$conn = mysqli_connect($servername, $dbusername, $dbpassword);
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
