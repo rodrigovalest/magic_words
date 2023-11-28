@@ -243,11 +243,11 @@ let lastTypedWord = "";
 
 //Seta a imagem de fundo
 const Bg = new Image();
-Bg.src = "images/Tower.png"
+Bg.src = "../images/Tower.png"
 //ctx.drawImage(Bg, 0, 0, wCanvas, hCanvas);
 
 const spaceBg = new Image();
-spaceBg.src = "images/SpaceBg.png";
+spaceBg.src = "../images/SpaceBg.png";
 
 //Opacidade da BG - utilizado para fazer coisas aparecerem e a posicão iniciais das estrelas,sendo uma em cima da outra
 var bgOpacity = 0;
@@ -267,7 +267,7 @@ function updateBackground(red, green, blue) {
 
 //Seta a imagem da nuvem
 const cloudSprite = new Image();
-cloudSprite.src = "images/CloudSprite.png";
+cloudSprite.src = "../images/CloudSprite.png";
 
 //Seta as variaveis da situação onde o jogador ainda não saiu do chão/nuvem inicial , a posicão da nuvem inicial, e o seu movimento para baixo
 let onStarterPosition = true;
@@ -277,7 +277,7 @@ let downCount = 3;
 
 //Seta a imagem da nuvem que fica passando no Background
 const cloudSpriteBG = new Image();
-cloudSpriteBG.src = "images/CloudBG.png";
+cloudSpriteBG.src = "../images/CloudBG.png";
 //ctx.drawImage(cloudSpriteBG, 0, 0, wCanvas, hCanvas);
 
 //Classe que é utilizada para Criar as instancias das nuvens do Background, tendo como variaveis
@@ -310,25 +310,25 @@ let cloudArray = [];
 
 //Seta a imagem do Chao
 const groundSprite = new Image();
-groundSprite.src = "images/Ground.png";
+groundSprite.src = "../images/Ground.png";
 
 //Seta a imagem da bruxinha parada
 const SpriteWitchIdle = new Image();
-SpriteWitchIdle.src = "images/SpriteWitchIdle.png";
+SpriteWitchIdle.src = "../images/SpriteWitchIdle.png";
 //ctx.drawImage(SpriteWitchIdle, 0, 0, 32, 42, 0, 0, 32 * 2, 42 * 2);
 
 //Seta a imagem da bruxinha tomando dano
 const SpriteWitchDamage = new Image();
-SpriteWitchDamage.src = "images/SpriteWitchDamage.png";
+SpriteWitchDamage.src = "../images/SpriteWitchDamage.png";
 //ctx.drawImage(SpriteWitchDamage, 0, 0, 32, 42, 0, 0, 32 * 2, 42 * 2);
 
 //Seta a imagem da bruxinha fazendo magia
 const SpriteWitchCharge = new Image();
-SpriteWitchCharge.src = "images/SpriteWitchCharge.png";
+SpriteWitchCharge.src = "../images/SpriteWitchCharge.png";
 //ctx.drawImage(SpriteWitchCharge, 0, 0, 48, 48, 0, 0, 32 * 2.5, 42 * 2.5);
 
 const SpriteWitchPuff = new Image();
-SpriteWitchPuff.src = "images/Puff.png";
+SpriteWitchPuff.src = "../images/Puff.png";
 //ctx.drawImage(SpriteWitchCharge, 0, 0, 48, 48, 0, 0, 32 * 2.5, 42 * 2.5);
 
 
