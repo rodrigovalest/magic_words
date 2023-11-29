@@ -1,6 +1,6 @@
 <?php
 
-require('credentials.php');
+require("../../credentials.php");
 
 $conn = mysqli_connect($servername, $dbusername, $dbpassword);
 if (!$conn) {

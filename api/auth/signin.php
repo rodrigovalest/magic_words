@@ -7,6 +7,23 @@ header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
+function generateJWT($payload) {
+    $secretKey = "123mudar";
+
+    $header = json_encode(['alg' => 'HS256', 'typ' => 'JWT']);
+    $header = base64_encode($header);
+
+    $payload = json_encode($payload);
+    $payload = base64_encode($payload);
+
+    $signature = hash_hmac('sha256', "$header.$payload", $secretKey, true);
+    $signature = base64_encode($signature);
+
+    $jwt = "$header.$payload.$signature";
+
+    return $jwt;
+}
+
 if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
     header("HTTP/1.1 200 OK");
     exit();
@@ -22,10 +39,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     $username = htmlspecialchars(stripslashes(trim($data->username)));
-    $email = htmlspecialchars(stripslashes(trim($data->email)));
     $password = htmlspecialchars(stripslashes(trim($data->password)));
 
-    if ($username === NULL || $email === NULL || $password === NULL) {
+    if ($username === NULL || $password === NULL) {
         echo json_encode(["error" => "invalid data"]);
         exit();
     }
@@ -36,15 +52,29 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     $username = mysqli_real_escape_string($conn, $username);
-    $email = mysqli_real_escape_string($conn, $email);
     $password = mysqli_real_escape_string($conn, $password);
 
-    $sql = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$password');";
-    if (!mysqli_query($conn, $sql)) {
-        die("Error inserting new user");
+    $sql = "SELECT * FROM users WHERE username = '$username' AND password = '$password';";
+    $result = mysqli_query($conn, $sql);
+
+    if (!$result) {
+        die("error: " . mysqli_error($conn));
     }
 
-    echo json_encode(["message" => "success saving new user"]);
+    if (mysqli_num_rows($result) != 1) {
+        echo json_encode(["message" => "invalid credentials"]);
+        http_response_code(401);
+        exit();
+    }
+
+    $payload = [
+        "iss" => "magicwords",
+        "username" => $username,
+        "exp" => time() + 3600
+    ];
+    $token = generateJWT($payload);
+
+    echo json_encode(["message" => "valid credentials", "data" => $token]);
     exit();
 }
 
