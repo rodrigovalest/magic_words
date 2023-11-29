@@ -1,0 +1,87 @@
+#bgshadow {
+    position: absolute;
+    z-index: 3;
+    width: 516px;
+    height: 517px;
+    background-color: rgba(0, 0, 0, 0.608);
+}
+
+#tableBg {
+    position: relative;
+    top: 15%;
+    left: 2.5%;
+    z-index: 30;
+    background-color: white;
+    width: 480px;
+    height: 420px;
+    border: black solid 5px;
+}
+
+.button-small {
+    font-size: 20px;
+    width: 130px;
+}
+
+.Relatorio {
+    background-color: #adadad;
+    color: black;
+}
+
+.Relatorio:hover {
+    background-color: black;
+    color: white;
+}
+
+.SairLiga {
+    background-color: orange;
+    color: black;
+}
+
+.SairLiga:hover {
+    background-color: black;
+    color: white;
+}
+
+
+.form-checkbox {
+    position: relative;
+    left: 80px;
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+}
+
+#form-select {
+    position: relative;
+    left: 60px;
+    height: 25px;
+    width: 62px;
+    background-color: transparent;
+    border: 2px solid #fff;
+}
+
+#tableDiv {
+    position: absolute;
+    top: 15%;
+    left: 2%;
+    width: 95%;
+    height: 68%;
+    overflow-y: scroll;
+    border: black 3px solid;
+}
+
+#tabela {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#tabela tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#tabela th {
+    padding: 2px;
+    text-align: center;
+    background-color: black;
+    color: white;
+}

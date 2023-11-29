@@ -18,6 +18,14 @@
         <div id="bgshadow">
             <div id="tableBg">
                 <form action="" style="width: 480px;margin: 10px;" id="form">
+                    <div class="form-group" style="width: 450px;">
+                        <select name="mode" id="form-select" style="top: 10%;width: 380px;">
+                            <option value="mode1">Stairs</option>
+                            <option value="mode2">Random</option>
+                        </select>
+                        <div class="form-label" style="top: -99%; width: 50px;"><span>Liga</span></div>
+                    </div>
+                    <br><br>
                     <div>
                         <div class="form-group" style="width: 150px;">
                             <input class="form-field" type="text" style="width: 60px;">
@@ -32,11 +40,11 @@
                                 <option value="mode1">Stairs</option>
                                 <option value="mode2">Random</option>
                             </select>
-                            <div class="form-label" style="top: -90%; width: 50px;"><span>Modo</span></div>
+                            <div class="form-label" style="top: -99%; width: 50px;"><span>Modo</span></div>
                         </div>
                     </div>
                 </form>
-                <div id="tableDiv">
+                <div id="tableDiv" style="height: 60%;top: 25%;">
                     <table id="tabela" border="2">
                         <tr>
                             <th>Company</th>
@@ -98,13 +106,16 @@
 
 
                 <div id="button-group" style="flex-direction: row; top: 92%;justify-content: center;">
-                    <a href="../index.html"><button class="button button-small Voltar">Voltar</button></a>
+                    <a href="./index.html"><button class="button button-small Voltar"
+                            style="width: 80px;">Voltar</button></a>
+                    <a href="./SairLiga.html"><button class="button button-small SairLiga">Sair da Liga</button></a>
                     <a href="./auth/signin"><button class="button button-small Relatorio">Relatório</button></a>
-                    <a href="./CreateLiga.html"><button class="button button-small">Ligas</button></a>
+                    <a href="./CreateLiga.html"><button class="button button-small"
+                            style="width: 70px;">Ligas</button></a>
                 </div>
             </div>
         </div>
-        <img src="../images/Ground.png" alt="" id="Ground" class="titleScreen" style="top: 50%;">
+        <img src=" ../images/Ground.png" alt="" id="Ground" class="titleScreen" style="top: 50%;">
     </div>
     <button id="powerButton" onclick="TurnTv()">
         <span class="material-symbols-outlined">

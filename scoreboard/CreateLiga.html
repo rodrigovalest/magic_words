@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../index.css">
+    <link rel="stylesheet" href="./scoreboard.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <title>Scoreboard</title>
+</head>
+
+<body>
+    <div id="tvBackgorund" class="titleScreen">
+        <h1 id="title" style="font-size: 60px;margin: 0px;">Criar/Entrar numa Liga</h1>
+        <img src="../images/Tower.png" alt="" id="tower" class="titleScreen">
+        <div id="bgshadow">
+            <div id="tableBg" style="height: 300px;top: 20%;">
+                <form action="" style="width: 480px;margin: 10px;" id="form">
+                    <div class="form-group" style="width: 450px;top: 10%;">
+                        <input class="form-field" type="text" style="width: 320px;left: 120px;">
+                        <div class="form-label" style="width: 110px;"><span>Nome da Liga</span></div>
+                    </div>
+                    <div class="form-group" style="width: 450px;top: 30%;">
+                        <input class="form-field" type="text" style="width: 310px;left: 130px;">
+                        <div class="form-label" style="width: 120px;"><span>Palavra-chave</span></div>
+                    </div>
+                    <div id="button-group" style="flex-direction: row; top: 60%;left: 0%;justify-content: center;">
+                        <input type="submit" class="button button-small Salvar" value="Criar">
+                        <input type="submit" class="button button-small Salvar" value="Entrar">
+                    </div>
+                </form>
+                <a href="./LigaScore.html"><button class="button button-small Voltar"
+                        style="width: 80px;position: relative;top: 70%;left: 40%;">Voltar</button></a>
+            </div>
+        </div>
+        <img src=" ../images/Ground.png" alt="" id="Ground" class="titleScreen" style="top: 50%;">
+    </div>
+    <button id="powerButton" onclick="TurnTv()">
+        <span class="material-symbols-outlined">
+            power_settings_new
+        </span>
+    </button>
+
+
+    <img src="../images/DoodleJumpFrame.png" alt="" id="doodle">
+    <img src="../images/Window.png" alt="" id="window">
+</body>
+<script src="../GlobalScript.js"></script>
+
+</html>
