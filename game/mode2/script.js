@@ -72,17 +72,17 @@ const Bg = new Image();
 Bg.src = "url(pxArt.png)";
 
 const SpriteWitchIdle = new Image();
-SpriteWitchIdle.src = "../images/SpriteWitchIdle.png";
-ctx.drawImage(SpriteWitchIdle, 0, 0, 32, 42, 0, 0, 32 * 2, 42 * 2);
+SpriteWitchIdle.src = "images/SpriteWitchIdle.png";
+ctx.drawImage(SpriteWitchIdle,0,0,32,42,0,0,32*2,42*2);
 
 
 const SpriteWitchDamage = new Image();
-SpriteWitchDamage.src = "../images/SpriteWitchDamage.png";
-ctx.drawImage(SpriteWitchDamage, 0, 0, 32, 42, 0, 0, 32 * 2, 42 * 2);
+SpriteWitchDamage.src = "images/SpriteWitchDamage.png";
+ctx.drawImage(SpriteWitchDamage,0,0,32,42,0,0,32*2,42*2);
 
 const SpriteWitchCharge = new Image();
-SpriteWitchCharge.src = "../images/SpriteWitchCharge.png";
-ctx.drawImage(SpriteWitchCharge, 0, 0, 48, 48, 0, 0, 32 * 2.5, 42 * 2.5);
+SpriteWitchCharge.src = "images/SpriteWitchCharge.png";
+ctx.drawImage(SpriteWitchCharge,0,0,48,48,0,0,32*2.5,42*2.5);
 
 const spriteWitchWidth = 32;
 const spriteWitchHeight = 48;
@@ -92,15 +92,15 @@ const witchXScale = spriteWitchWidth * 2.5;
 const witchYScale = spriteWitchHeight * 2.5;
 
 function drawWitchFrame(witchSprite, frameY, canvasX, canvasY) {
-  ctx.drawImage(witchSprite, 0, frameY * spriteWitchHeight,
+  ctx.drawImage(witchSprite, 0, frameY * spriteWitchHeight, 
     spriteWitchWidth, spriteWitchHeight, canvasX, canvasY, witchXScale, witchYScale);
 }
 function drawWitchChargeFrame(frameY, canvasX, canvasY) {
-  ctx.drawImage(SpriteWitchCharge, 0, frameY * spriteWitchChargeSize,
+  ctx.drawImage(SpriteWitchCharge, 0, frameY * spriteWitchChargeSize, 
     spriteWitchChargeSize, spriteWitchChargeSize, canvasX, canvasY, witchXScale, witchYScale);
 }
 const cloudSprite = new Image();
-cloudSprite.src = "../images/cloudSprite.png";
+cloudSprite.src = "images/cloudSprite.png";
 
 let cycleLoop = 5;
 let currentLoopIndex = 0;
@@ -135,7 +135,7 @@ function generateDropping() {
     ctx.clearRect(character.x, character.y - 70, witchXScale, witchYScale);
     //ctx.fillRect(character.x, character.y, 40, 40);
     //drawPlayerFrame(cycleLoop[currentLoopIndex], 0, character.x, character.y);
-    drawWitchFrame(SpriteWitchIdle, currentLoopIndex, character.x, character.y - 70);
+    drawWitchFrame(SpriteWitchIdle,currentLoopIndex,character.x, character.y - 70);
     //window.requestAnimationFrame(step);
   }
   // Para cada palavra caindo...
@@ -148,7 +148,7 @@ function generateDropping() {
 
     // Fazer personagem acompanhar a queda da ultima palavra digitada
     if (word == lastTypedWord) {
-      cycleLoop = 4;
+      cycleLoop=4;
       //ctx.clearRect(character.x, character.y - 35, scaledWidth, scaledHeight);
       //drawFrame(0, 0, character.x, character.y);
       ctx.clearRect(character.x, character.y - 70, witchXScale, witchYScale);
@@ -157,8 +157,8 @@ function generateDropping() {
       //ctx.fillRect(character.x, character.y, 40, 40);
 
       //drawPlayerFrame(cycleLoop[currentLoopIndex], 0, character.x, character.y);
-
-      drawWitchChargeFrame(currentLoopIndex, character.x, character.y - 70)
+      
+      drawWitchChargeFrame(currentLoopIndex, character.x, character.y -70)
       //window.requestAnimationFrame(step);
     }
 
@@ -178,7 +178,7 @@ function generateDropping() {
 
     word.typed == false ? ctx.fillStyle = "gray" : ctx.fillStyle = "blue";
     ctx.fillRect(word.x - 10, word.y + 10, word.width + 20, -35);
-    ctx.drawImage(cloudSprite, 0, 0, 221, 93, word.x - 10, word.y - 64, 64, 38);
+    ctx.drawImage(cloudSprite,0,0,221,93,word.x - 10,word.y - 64,64,38);
 
     ctx.fillStyle = "black";
     ctx.font = "16px Arial";

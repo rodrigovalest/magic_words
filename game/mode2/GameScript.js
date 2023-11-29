@@ -102,18 +102,12 @@ function playStop() {
     typingWord = "";
     lastTypedWord = "";
 
-    //Id - Modo de jogo onde so pode digitar a proxima linha de palavras
-    idcount = 0;
-    idcheck = 0;
-
     //Reseta a velocidade das plataformas e a array das nuvens
     platSpeed = 5;
     cloudArray = [];
 
     //Reseta o score
     score = 0;
-    // errors = 0;
-    // document.getElementById("errors").textContent = errors;
 
     platCount = getRandomInt(1, 3);
     ctx.fillStyle = "lightgray";
@@ -122,7 +116,6 @@ function playStop() {
     //Começa a rodar o jogo
     step();
 }
-
 
 //Array das palavras - [Futuro banco de dados]
 const words = [
@@ -179,7 +172,7 @@ const hCanvas = c.height;
 //Variaveis de tempo, permissão para jogar , Array que guarda as palavras a serem digitadas (wrds)
 //A palavra que está sendo digitada pelo player e a ultima palavra que foi digitada pelo player
 let tempo = 0;
-let gameOver = true;
+let gameOver = false;
 const droppingWords = [];
 let typingWord = "";
 let lastTypedWord = "";
@@ -190,15 +183,14 @@ Bg.src = "../images/Tower.png"
 //ctx.drawImage(Bg, 0, 0, wCanvas, hCanvas);
 
 const spaceBg = new Image();
-spaceBg.src = "images/SpaceBg.png";
+spaceBg.src = "../images/SpaceBg.png";
 
 //Opacidade da BG - utilizado para fazer coisas aparecerem e a posicão iniciais das estrelas,sendo uma em cima da outra
 var bgOpacity = 0;
 var spaceBgY = [0, - hCanvas];
 
 //Variaveis de Cor e passos(utilizado quando que trocar entre varias cores)
-var red = 166, green = 191, blue = 207, steps = 1,
-    redInv = 0, greenInv = 255, blueInv = 255;
+var red = 166, green = 191, blue = 207, steps = 1;
 
 //Funcão para mudar a cor um um valor da RGB e a outra que utiliza de variaveis para criar uma cor RGB
 function changeColor(color, increase) {
@@ -215,7 +207,7 @@ cloudSprite.src = "../images/CloudSprite.png";
 //Seta as variaveis da situação onde o jogador ainda não saiu do chão/nuvem inicial , a posicão da nuvem inicial, e o seu movimento para baixo
 let onStarterPosition = true;
 let cloudX;
-let cloudY;
+let groundY;
 let downCount = 3;
 
 //Seta a imagem da nuvem que fica passando no Background
@@ -348,10 +340,7 @@ let platChoosePlace = 0;
 let platSpeed = 8;
 let platCount = 0;
 
-//Função principal do jogo, tem multiplas utilidades como:
-//Desenhar e animarno canvas todos os componentes
-//Criar e adicionar novas palavras na array wrds
-//Checar se o player Perdeu o jogo, está digitando
+
 function step() {
 
     ctx.fillStyle = "lightgray";
@@ -424,8 +413,8 @@ function step() {
         //Há tres possiveis locais onde uma plataforma pode cair, para que cada uma não fique uma em cima da outra
         //No começo do jogo um desses locais é escolhido como o local da plaforma de inicio ...
         platChoosePlace = getRandomInt(0, 2);
-
-        for (let j = 0; j <= 1; j++) {
+        platCount = getRandomInt(1, 4);
+        for (let j = 0; j < platCount; j++) {
 
             //Cria uma instancia de uma palavra
             let word = new classWord(words[getRandomInt(0, words.length - 1)], platPlaces[platChoosePlace], 0, platSpeed / 10,
@@ -538,9 +527,6 @@ function step() {
                 speedMult = 1;
             }
         }
-        if (lastTypedWord.id == word.id && word.typed != true && idmode) {
-            word.speed = 10;
-        }
     });
 
     //Se a ultima palavra que foi digitada, ou ligue o power up, ou ganhe uma vida
@@ -574,8 +560,10 @@ function step() {
 
     //Se tempo chegou em um multiplo de Framecount - Proximo frame
     if (tempo % frameCount == 0) {
+
         //Vai pro proximo frame da imagem
         currentLoopIndex++;
+
         //Se ele chegou no ultimo frame, começa do primeiro frame
         if (currentLoopIndex >= cycleLoop) {
             currentLoopIndex = 0;
@@ -598,28 +586,23 @@ function step() {
     //Se é para estar na posição incial
     if (onStarterPosition) {
 
-        //Desenha a nuvem e o coloca o player na parte de baixo no meio da tela
+        //Desenha o Chão e o coloca o player na parte de baixo no meio da tela
         downCount = 3;
         character.x = wCanvas / 2 - spriteWitchWidth;
         character.y = hCanvas - 70;
-        cloudX = character.x;
-        cloudY = character.y;
-
-        //Nuvem ou chão
-        //ctx.drawImage(cloudSprite, 0, 0, 221, 93, character.x + spriteWitchWidth / 8, character.y, 64, 38);
+        groundY = character.y;
         ctx.drawImage(groundSprite, 0, 0, 600, 90, -20, hCanvas - 90, wCanvas + 80, 90);
 
-    } else if (!onStarterPosition && cloudY + (downCount / 3) < (hCanvas + 10)) {
+    } else if (!onStarterPosition && groundY + (downCount / 3) < (hCanvas + 10)) {
 
-        //Se não comece a levar a nuvem para baixo e desenhar coloca o player na nuvem no qual ele digitou  //Nuvem ou chão
-        //ctx.drawImage(cloudSprite, 0, 0, 221, 93, cloudX + spriteWitchWidth / 8, cloudY + downCount / 3, 64, 38);
+        //Se não comece a levar o chão para baixo e desenhar coloca o player na nuvem no qual ele digitou 
         ctx.drawImage(groundSprite, 0, 0, 600, 90, -20, hCanvas - 90 + downCount / 3, wCanvas + 80, 90);
         downCount++;
         character.y = lastTypedWord.y + 6;
         character.x = lastTypedWord.x - 20 + ((lastTypedWord.width - 30) / 2);
     } else {
 
-        //E se a nuvem ja sumiu, só coloca o player na nuvem no qual ele digitou
+        //E se o chão ja sumiu, só coloca o player na nuvem no qual ele digitou
         character.y = lastTypedWord.y + 6;
         character.x = lastTypedWord.x - 20 + ((lastTypedWord.width - 30) / 2);
         downCount++;
@@ -629,8 +612,6 @@ function step() {
     tempo++;
     requestAnimationFrame(step);
 }
-
-
 
 //Caso o player digite uma letra
 document.addEventListener("keypress", function (event) {
@@ -654,19 +635,23 @@ document.addEventListener("keypress", function (event) {
 
             //Se A palavra que esta sendo digitada é igual a alguma palavra dentro da array & ela nao foi digitada
             if (typingWord == droppingWords[k].word && droppingWords[k].typed != true) {
+
+                //Adiciona a pontuação
                 score += 10 * scoreMult;
                 document.getElementById("score").textContent = score;
+
+                //Reseta a string que esta sendo digitada,confirma que essa palavra foi digitada, essa palavra digitada é guardada
+                //Ja que ele ira mudar de posicao, ele nao esta mais na posicao inicial
                 typingWord = "";
                 droppingWords[k].typed = true;
-
                 console.log(lastTypedWord);
                 if (lastTypedWord != "" || lastTypedWord != null || lastTypedWord != undefined) {
                     console.log(lastTypedWord, lastTypedWord.speed);
                     lastTypedWord.speed = 10;
                 }
-
                 lastTypedWord = droppingWords[k];
                 onStarterPosition = false;
+
 
             }
         }
@@ -681,4 +666,4 @@ document.addEventListener("keydown", function (event) {
     }
 });
 
-
+playStop();

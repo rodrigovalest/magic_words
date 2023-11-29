@@ -88,6 +88,8 @@ function playStop() {
 
     document.getElementById("Voltar").style.display = "none";
     document.getElementById("Recomeçar").style.display = "none";
+    // Se o jogo estiver acabado/não começado e a função for chamado...
+    // if (gameOver) {
     //Permite começar o jogo e Reseta o tempo
     gameOver = false;
     tempo = 0;
@@ -115,14 +117,20 @@ function playStop() {
     // errors = 0;
     // document.getElementById("errors").textContent = errors;
 
-    platCount = getRandomInt(1, 3);
+    platCount = 3;
     ctx.fillStyle = "lightgray";
     ctx.font = "16px Arial";
 
     //Começa a rodar o jogo
     step();
-}
+    // } else {
+    //     //Se o jogo estiver rodando e a função for chamado - Limpa a tela,muda o Texto para play, e termina o jogo 
+    //     ctx.clearRect(0, 0, wCanvas, hCanvas);
+    //     window.location.href = "http://127.0.0.1:5500/TrabalhoFinal/web1-trabfinal/WithLogin.html";
 
+    //     gameOver = true;
+    // }
+}
 
 //Array das palavras - [Futuro banco de dados]
 const words = [
@@ -179,7 +187,7 @@ const hCanvas = c.height;
 //Variaveis de tempo, permissão para jogar , Array que guarda as palavras a serem digitadas (wrds)
 //A palavra que está sendo digitada pelo player e a ultima palavra que foi digitada pelo player
 let tempo = 0;
-let gameOver = true;
+let gameOver = false;
 const droppingWords = [];
 let typingWord = "";
 let lastTypedWord = "";
@@ -190,15 +198,14 @@ Bg.src = "../images/Tower.png"
 //ctx.drawImage(Bg, 0, 0, wCanvas, hCanvas);
 
 const spaceBg = new Image();
-spaceBg.src = "images/SpaceBg.png";
+spaceBg.src = "../images/SpaceBg.png";
 
 //Opacidade da BG - utilizado para fazer coisas aparecerem e a posicão iniciais das estrelas,sendo uma em cima da outra
 var bgOpacity = 0;
 var spaceBgY = [0, - hCanvas];
 
 //Variaveis de Cor e passos(utilizado quando que trocar entre varias cores)
-var red = 166, green = 191, blue = 207, steps = 1,
-    redInv = 0, greenInv = 255, blueInv = 255;
+var red = 166, green = 191, blue = 207, steps = 1;
 
 //Funcão para mudar a cor um um valor da RGB e a outra que utiliza de variaveis para criar uma cor RGB
 function changeColor(color, increase) {
@@ -313,6 +320,9 @@ const character = {
     playing: false
 }
 
+let idcount = 0;
+let idcheck = 0;
+
 //Variaveis para tipos de plataformas - Onelife: Mais uma vida; scoreMult & speedMult: Multiplicadores para pontuação e "gravidade";
 // powerupTimer: Temporizador para alguns powers; activatePower: Se um power esta ativo;
 // types: array com todos os tipos, onde é retirado o tipo, por isso os varios tipos normais, para aumentar a chance de ser um bloco normal
@@ -348,10 +358,7 @@ let platChoosePlace = 0;
 let platSpeed = 8;
 let platCount = 0;
 
-//Função principal do jogo, tem multiplas utilidades como:
-//Desenhar e animarno canvas todos os componentes
-//Criar e adicionar novas palavras na array wrds
-//Checar se o player Perdeu o jogo, está digitando
+
 function step() {
 
     ctx.fillStyle = "lightgray";
@@ -425,7 +432,7 @@ function step() {
         //No começo do jogo um desses locais é escolhido como o local da plaforma de inicio ...
         platChoosePlace = getRandomInt(0, 2);
 
-        for (let j = 0; j <= 1; j++) {
+        for (let j = 0; j < platCount; j++) {
 
             //Cria uma instancia de uma palavra
             let word = new classWord(words[getRandomInt(0, words.length - 1)], platPlaces[platChoosePlace], 0, platSpeed / 10,
@@ -471,8 +478,10 @@ function step() {
 
             //Mede o tamanho da palavra para ser escrita no canvas e a palavra é adicionada na array para ser animada no jogo
             word.width = ctx.measureText(word.word).width;
+            word.id = idcount;
             droppingWords.push(word);
         }
+        idcount++;
     }
 
     //Para cada item que tem na array wrds
@@ -538,7 +547,7 @@ function step() {
                 speedMult = 1;
             }
         }
-        if (lastTypedWord.id == word.id && word.typed != true && idmode) {
+        if (lastTypedWord.id == word.id && word.typed != true) {
             word.speed = 10;
         }
     });
@@ -574,8 +583,10 @@ function step() {
 
     //Se tempo chegou em um multiplo de Framecount - Proximo frame
     if (tempo % frameCount == 0) {
+
         //Vai pro proximo frame da imagem
         currentLoopIndex++;
+
         //Se ele chegou no ultimo frame, começa do primeiro frame
         if (currentLoopIndex >= cycleLoop) {
             currentLoopIndex = 0;
@@ -651,23 +662,31 @@ document.addEventListener("keypress", function (event) {
 
         //Para cada item da array
         for (let k = 0; k < droppingWords.length; k++) {
-
+            //console.log(idcheck);
             //Se A palavra que esta sendo digitada é igual a alguma palavra dentro da array & ela nao foi digitada
             if (typingWord == droppingWords[k].word && droppingWords[k].typed != true) {
-                score += 10 * scoreMult;
-                document.getElementById("score").textContent = score;
-                typingWord = "";
-                droppingWords[k].typed = true;
 
-                console.log(lastTypedWord);
-                if (lastTypedWord != "" || lastTypedWord != null || lastTypedWord != undefined) {
-                    console.log(lastTypedWord, lastTypedWord.speed);
-                    lastTypedWord.speed = 10;
+                //
+                if (droppingWords[k].id == idcheck) { //- Outro modo de jogo
+
+                    //Adiciona a pontuação
+                    score += 10 * scoreMult;
+                    document.getElementById("score").textContent = score;
+
+                    //Reseta a string que esta sendo digitada,confirma que essa palavra foi digitada, essa palavra digitada é guardada
+                    //Ja que ele ira mudar de posicao, ele nao esta mais na posicao inicial
+                    typingWord = "";
+                    droppingWords[k].typed = true;
+                    console.log(lastTypedWord);
+                    if (lastTypedWord != "" || lastTypedWord != null || lastTypedWord != undefined) {
+                        console.log(lastTypedWord, lastTypedWord.speed);
+                        lastTypedWord.speed = 10;
+                    }
+                    lastTypedWord = droppingWords[k];
+                    onStarterPosition = false;
+
+                    idcheck++;
                 }
-
-                lastTypedWord = droppingWords[k];
-                onStarterPosition = false;
-
             }
         }
     }
@@ -681,4 +700,4 @@ document.addEventListener("keydown", function (event) {
     }
 });
 
-
+playStop();
