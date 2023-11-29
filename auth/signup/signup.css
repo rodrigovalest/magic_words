@@ -1,0 +1,28 @@
+#form {
+    z-index: 10;
+}
+
+.Salvar {
+    background-color: greenyellow;
+    color: white;
+}
+
+.Voltar {
+    background-color: red;
+    color: white;
+}
+
+.Salvar:hover {
+    background-color: black;
+    color: white;
+}
+
+.Voltar:hover {
+    background-color: black;
+    color: white;
+}
+
+.form-submit:active {
+    box-shadow: 0 3px #666;
+    transform: translateY(4px);
+}
