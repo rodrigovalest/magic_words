@@ -1,0 +1,238 @@
+@import url('https://fonts.cdnfonts.com/css/jockey-one');
+
+* {
+    font-family: 'Jockey One', sans-serif;
+}
+
+html {
+    height: 100%;
+    background: url('https://www.lexaloffle.com/gfx/p8tv_header.png') center center / cover no-repeat;
+    background-size: 7200px 803px;
+}
+
+.titleScreen {
+    position: absolute;
+    top: 50%;
+    right: 50%;
+}
+
+.button {
+    z-index: 1;
+    background-color: white;
+    border: solid 5px black;
+    border-radius: 20px;
+    width: 250px;
+    font-size: 40px;
+    font-weight: lighter;
+    margin: 10px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    box-shadow: 0 9px #999;
+}
+
+.button:hover {
+    background-color: black;
+    color: white;
+}
+
+.button:active {
+    background-color: white;
+    box-shadow: 0 3px #666;
+    transform: translateY(4px);
+}
+
+#doodle {
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    transform: translate(-130%, -70%);
+    width: 300px;
+}
+
+#window {
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    transform: translate(230%, -75%);
+    width: 300px;
+}
+
+#Ground {
+    width: 515px;
+    top: 55.4%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, 235%);
+}
+
+
+#tower {
+    z-index: 1;
+    width: 300px;
+    height: 515px;
+    object-fit: cover;
+    top: 55.4%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -55.5%);
+}
+
+#tvBackgorund {
+    background-color: #a6bfcf;
+    width: 515px;
+    height: 515px;
+    top: 55.4%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: start;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+#title {
+    color: white;
+    z-index: 1000;
+    font-size: 86px;
+    text-align: center;
+    margin: 25px;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+}
+
+#button-group {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    z-index: 10;
+    top: 55.4%;
+    left: 0%;
+    transform: translate(0%, -50%);
+}
+
+#powerButton {
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    transform: translate(800%, 800%);
+    background-color: green;
+    border: solid 3px darkgreen;
+    border-radius: 20px;
+    color: white;
+    margin: 10px;
+    transition-duration: 0.4s;
+}
+
+.material-symbols-outlined {
+    font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24;
+
+}
+
+/*  */
+.form-group {
+    position: absolute;
+    background-color: white;
+    border-radius: 20px;
+    border: solid black;
+    height: 30px;
+    border-width: 5px;
+    /* padding: 0px 5px; */
+}
+
+.form-field {
+    position: relative;
+    border-radius: 0px 20px 20px 0px;
+    /* border: solid black; */
+    border-width: 0px;
+    height: 28px;
+    width: 315px;
+    top: -0px;
+    left: 80px;
+    background-color: white;
+}
+
+.form-field:focus {
+    outline: none;
+}
+
+.form-label {
+    position: relative;
+    height: 28px;
+    width: 70px;
+    top: -35px;
+    left: -5px;
+    background-color: #adadad;
+    border-radius: 20px;
+    border: solid black;
+    border-width: 5px;
+    text-align: center;
+    padding-top: 2px;
+    font-size: 20px;
+}
+
+.form-submit {
+    border: solid black;
+    box-shadow: 0 5px #999;
+    border-radius: 20px;
+    font-size: 20px;
+}
+
+/*  */
+#gamemodes {
+    background-color: #adadad;
+    border: white solid 5px;
+    border-radius: 20px;
+}
+
+.gameButton {
+    width: 150px;
+    box-shadow: 0 0px;
+}
+
+#gamemodeText {
+    color: white;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+    font-size: 30px;
+    font-weight: bold;
+    padding-bottom: 60px;
+}
+
+#gameboard {
+    /* border-width: 3px;
+    border-color: red;
+    border-style: solid; */
+    position: absolute;
+    top: 55.4%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+}
+
+.Salvar {
+    background-color: greenyellow;
+    color: white;
+}
+
+.Voltar {
+    background-color: red;
+    color: white;
+}
+
+.Salvar:hover {
+    background-color: black;
+    color: white;
+}
+
+.Voltar:hover {
+    background-color: black;
+    color: white;
+}
