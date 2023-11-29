@@ -12,15 +12,6 @@
 
 <body>
     <!-- <h1 id="title" class="titleScreen">Magic words</h1> -->
-    <a href="./game/mode1">game 1</a>
-    <a href="#">game 2</a>
-    <br>
-    <br>
-    <a href="./auth/signin">signin</a>
-    <a href="./auth/signup">signup</a>
-    <a href="./auth/signout">signout</a>
-    <br>
-    <br>
     <a href="./scoreboard/mode1">scoreboard 1</a>
     <a href="./scoreboard/mode2">scoreboard 2</a>
     <!-- Base -->
@@ -46,13 +37,7 @@
     <!-- Base -->
 </body>
 <script>
-    let isTvOn = false;
-    const title = document.getElementsByClassName('titleScreen');
-    for (let index = 0; index < title.length; index++) {
-        title[index].style.visibility = 'hidden';
-    }
-    document.getElementById('powerButton').style.backgroundColor = "red";
-    document.getElementById('powerButton').style.borderColor = "darkred";
+    let isTvOn = true;
     function TurnTv() {
         const title = document.getElementsByClassName('titleScreen');
         if (isTvOn) {

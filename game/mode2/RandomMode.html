@@ -16,24 +16,22 @@
         <p>Pontuação: <span id="score">0</span></p>
     </div>
     <div>
-        <a href="../../WithLogin.html"><button class="button Voltar" id="Voltar">Voltar</button></a>
-        <button class="button Salvar" id="Recomeçar" onclick="playStop()">
+        <a href="../../WithLogin.html"><button class="button Voltar titleScreen" id="Voltar">Voltar</button></a>
+        <button class="button Salvar titleScreen" id="Recomeçar" onclick="playStop()">
             <span>
                 Recomeçar
             </span>
         </button>
     </div>
-    <a href="../../WithLogin.html">
-        <button id="powerButton" style="background-color: green;border-color: darkgreen;" onclick="TurnTv()">
-            <span class="material-symbols-outlined">
-                power_settings_new
-            </span>
-        </button>
-    </a>
+    <button id="powerButton" style="background-color: green;border-color: darkgreen;" onclick="TurnTv()">
+        <span class="material-symbols-outlined">
+            power_settings_new
+        </span>
+    </button>
 
-    <canvas id="gameboard" height="515" width="515" p></canvas>
-    <img src="../../images/DoodleJumpFrame.png" alt="" id="doodle" class="titleScreen">
-    <img src="../../images/Window.png" alt="" id="window" class="titleScreen">
+    <canvas id="gameboard" height="515" width="515" class="titleScreen"></canvas>
+    <img src="../../images/DoodleJumpFrame.png" alt="" id="doodle">
+    <img src="../../images/Window.png" alt="" id="window">
     <script src="GameScript.js"></script>
 </body>
 <script src="../../GlobalScript.js"></script>

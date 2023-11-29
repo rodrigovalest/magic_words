@@ -38,13 +38,7 @@
     <!-- Base -->
 </body>
 <script>
-    let isTvOn = false;
-    const title = document.getElementsByClassName('titleScreen');
-    for (let index = 0; index < title.length; index++) {
-        title[index].style.visibility = 'hidden';
-    }
-    document.getElementById('powerButton').style.backgroundColor = "red";
-    document.getElementById('powerButton').style.borderColor = "darkred";
+    let isTvOn = true;
     function TurnTv() {
         const title = document.getElementsByClassName('titleScreen');
         if (isTvOn) {
