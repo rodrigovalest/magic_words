@@ -21,7 +21,8 @@ const fetchCredentials = async () => {
     const response = await fetch("http://localhost:8000/web1-trabfinal/api/match/index.php", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            Authorization: localStorage.getItem("token")
         },
         body: JSON.stringify(credentials)
     });
@@ -645,19 +646,19 @@ function step() {
         downCount++;
     }
 
-    // ctx.fillStyle = "white";
-    // ctx.strokeStyle = "black";
-    // ctx.lineWidth = 5;
-    // ctx.beginPath();
-    // ctx.roundRect(10, 10, 110, 20);
-    // ctx.stroke();
-    // ctx.fill();
+    ctx.fillStyle = "white";
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.roundRect(10, 10, 110, 20);
+    ctx.stroke();
+    ctx.fill();
 
     //A word
-    // ctx.fillStyle = "black";
-    // ctx.font = "16px Jockey One";
-    // ctx.fillText("Pontuação :", 20, 25);
-    // ctx.fillText(score, 105, 25);
+    ctx.fillStyle = "black";
+    ctx.font = "16px Jockey One";
+    ctx.fillText("Pontuação :", 20, 25);
+    ctx.fillText(score, 105, 25);
 
     //Tempo do jogo avança e Recomeça essa função
     tempo++;
@@ -692,7 +693,6 @@ document.addEventListener("keypress", function (event) {
 
                     //Adiciona a pontuação
                     score += 10 * scoreMult;
-                    document.getElementById("score").textContent = score;
 
                     //Reseta a string que esta sendo digitada,confirma que essa palavra foi digitada, essa palavra digitada é guardada
                     //Ja que ele ira mudar de posicao, ele nao esta mais na posicao inicial

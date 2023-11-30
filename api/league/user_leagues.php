@@ -3,8 +3,8 @@
 require_once("../../credentials.php");
 require_once("../token.php");
 
-header("Access-Control-Allow-Origin: http://localhost:8000");
-header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Origin: http://localhost");
+header("Access-Control-Allow-Methods: GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
@@ -15,25 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
     exit();
 }
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Pegar dados da partida
-    $json = file_get_contents("php://input");
-    $data = json_decode($json);
-
-    if ($data === NULL) {
-        echo json_encode(["error" => "invalid data"]);
-        exit();
-    }
-
-    $name = htmlspecialchars(stripslashes(trim($data->name)));
-    $password = htmlspecialchars(stripslashes(trim($data->password)));
-
-    if ($name === NULL || $password === NULL) {
-        echo json_encode(["error" => "invalid data"]);
-        http_response_code(401);
-        exit();
-    }
-
+if ($_SERVER["REQUEST_METHOD"] === "GET") {
     // Pegar dados do usuário a partir do token
     $token = isset($headers["Authorization"]) ? $headers["Authorization"] : null;
 
@@ -63,17 +45,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
     $user = mysqli_fetch_assoc($result);
 
-    // Limpa inputs do front
-    $name = mysqli_real_escape_string($conn, $name);
-    $password = mysqli_real_escape_string($conn, $password);
+    // Pegar ligas que o usuário está participando
+    $sql = "SELECT leagues.* from leagues, user_league 
+        WHERE user_league.league_id = leagues.id AND user_league.user_id = ". $user["id"] .";";
+    $result = mysqli_query($conn, $sql);
 
-    // Inserta nova liga
-    $sql = "INSERT INTO leagues (name, user_owner_id, password) VALUES ('$name', " . $user["id"] . ", '$password');";
-    if (!mysqli_query($conn, $sql)) {
-        die("Error inserting new user");
+    if (!$result) {
+        die("error: " . mysqli_error($conn));
     }
 
-    echo json_encode(["message" => "register new league successful"]);
+    $leagues = [];
+    if (mysqli_num_rows($result) > 0) {
+        while ($league = mysqli_fetch_assoc($result)) {
+            array_push($leagues, $league);
+        }
+    }
+
+    echo json_encode(["message" => "all user leagues", "leagues" => $leagues]);
     exit();
 }
 

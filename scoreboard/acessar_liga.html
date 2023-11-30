@@ -13,26 +13,25 @@
 
 <body>
     <div id="tvBackgorund" class="titleScreen">
-        <h1 id="title" style="font-size: 60px;margin: 0px;">Criar/Entrar numa Liga</h1>
+        <h1 id="title" style="font-size: 60px;margin: 0px;">Sair da Liga</h1>
         <img src="../images/Tower.png" alt="" id="tower" class="titleScreen">
         <div id="bgshadow">
-            <div id="tableBg" style="height: 300px;top: 20%;">
+            <div id="tableBg" style="height: 200px;top: 30%;">
+                <h1 id="title" style="font-size: 30px;margin: 0px;">Qual Liga você deseja acessar?</h1>
                 <div style="width: 480px;margin: 10px;" id="form">
-                    <div class="form-group" style="width: 450px;top: 10%;">
-                        <input class="form-field" type="text" style="width: 320px;left: 120px;" id="name">
-                        <div class="form-label" style="width: 110px;"><span>Nome da Liga</span></div>
-                    </div>
                     <div class="form-group" style="width: 450px;top: 30%;">
-                        <input class="form-field" type="text" style="width: 310px;left: 130px;" id="senha">
-                        <div class="form-label" style="width: 120px;"><span>Palavra-chave</span></div>
+                        <select name="mode" id="form-select" style="top: 10%;width: 380px;">
+                            <option value="mode1">Stairs</option>
+                            <option value="mode2">Random</option>
+                        </select>
+                        <div class="form-label" style="top: -99%; width: 50px;"><span>Liga</span></div>
                     </div>
-                    <div id="button-group" style="flex-direction: row; top: 60%;left: 0%;justify-content: center;">
-                        <button class="button button-small Salvar" value="Criar" onclick="create()">Criar</button>
-                        <button class="button button-small Salvar" value="Entrar" onclick="enter()">Entrar</button>
+                    <div id="button-group" style="flex-direction: row; top: 70%;left: 50%;">
+                        <a href="./LigaScore.html"><button class="button button-small Salvar">Continuar</button></a>
                     </div>
                 </div>
                 <a href="./index.html"><button class="button button-small Voltar"
-                        style="width: 80px;position: relative;top: 70%;left: 40%;">Voltar</button></a>
+                        style="width: 80px;position: relative;top: 30%;left: 20%;">Voltar</button></a>
             </div>
         </div>
         <img src=" ../images/Ground.png" alt="" id="Ground" class="titleScreen" style="top: 50%;">
@@ -47,7 +46,6 @@
     <img src="../images/DoodleJumpFrame.png" alt="" id="doodle">
     <img src="../images/Window.png" alt="" id="window">
 </body>
-<script src="script.js"></script>
 <script src="../global_script.js"></script>
 
 </html>

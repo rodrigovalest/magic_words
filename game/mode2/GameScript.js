@@ -10,6 +10,32 @@ function invert(s) {
     return s.split("").reverse().join("");
 }
 
+const fetchCredentials = async () => {
+    let playerscore = score;
+    let mode = "stairs";
+    let credentials = {
+        "score": playerscore,
+        "mode": mode,
+    }
+
+    const response = await fetch("http://localhost:8000/web1-trabfinal/api/match/index.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: localStorage.getItem("token")
+        },
+        body: JSON.stringify(credentials)
+    });
+
+    if (!response.ok) {
+        alert("Something went wrong. Try again!");
+        return;
+    }
+
+    const data = await response.json();
+    console.log(data);
+};
+
 function drawStroked(text, x, y) {
     ctx.font = "80px Jockey One"
     ctx.strokeStyle = 'black';
@@ -552,6 +578,7 @@ function step() {
             console.log("Acabou");
             //playStop();
             gameOver = true;
+            fetchCredentials();
             gameOverStep();
             //ctx.clearRect(0, 0, wCanvas, hCanvas);
             return;
@@ -608,6 +635,21 @@ function step() {
         downCount++;
     }
 
+
+    ctx.fillStyle = "white";
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.roundRect(10, 10, 110, 20);
+    ctx.stroke();
+    ctx.fill();
+
+    //A word
+    ctx.fillStyle = "black";
+    ctx.font = "16px Jockey One";
+    ctx.fillText("Pontuação :", 20, 25);
+    ctx.fillText(score, 105, 25);
+
     tempo++;
     requestAnimationFrame(step);
 }
@@ -637,8 +679,6 @@ document.addEventListener("keypress", function (event) {
 
                 //Adiciona a pontuação
                 score += 10 * scoreMult;
-                document.getElementById("score").textContent = score;
-
                 //Reseta a string que esta sendo digitada,confirma que essa palavra foi digitada, essa palavra digitada é guardada
                 //Ja que ele ira mudar de posicao, ele nao esta mais na posicao inicial
                 typingWord = "";
