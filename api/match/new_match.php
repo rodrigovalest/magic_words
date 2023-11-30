@@ -79,8 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
     // Criar relação entre partida e liga
-    $sql = "SELECT leagues.* 
-        FROM leagues
+    $sql = "SELECT leagues.* FROM leagues
         JOIN user_league ON leagues.id = user_league.league_id
         JOIN users ON users.id = user_league.user_id
         WHERE users.id = " . $user["id"] . ";";
@@ -91,20 +90,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
     
     $leagues = [];
+    $num_leagues = mysqli_num_rows($result);
 
     if (mysqli_num_rows($result) > 0) {
         while ($league = mysqli_fetch_assoc($result)) {
             array_push($leagues, $league);
 
-            $sql = "INSERT INTO match_league (id_match, id_league) 
-                VALUES (" . $match_id . ", " . $league["id"] . ");";
-            if (!$mysqli_query($conn, $sql)) {
+            $sql = "INSERT INTO match_league (match_id, league_id) VALUES (" . $match["id"] . ", " . $league["id"] . ");";
+            if (!mysqli_query($conn, $sql)) {
                 die("error: " . mysqli_error($conn));
             }
         }
     }
 
-    echo json_encode(["message" => "register match successful", "user" => $user, "match" => $match, "leagues" => $leagues]);
+    echo json_encode(["message" => "register match successful", "user" => $user, "match" => $match, "leagues" => $leagues, "num_leagues" => $num_leagues]);
     exit();
 }
 
