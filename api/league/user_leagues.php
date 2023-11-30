@@ -46,12 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     $user = mysqli_fetch_assoc($result);
 
     // Pegar ligas que o usuário está participando
-    $conn = mysqli_connect($servername, $dbusername, $dbpassword, $dbname);
-    if (!$conn) {
-        die("Connection failed: " . mysqli_connect_error());
-    }
-
-    $sql = "SELECT * from leagues, user_league 
+    $sql = "SELECT leagues.* from leagues, user_league 
         WHERE user_league.league_id = leagues.id AND user_league.user_id = ". $user["id"] .";";
     $result = mysqli_query($conn, $sql);
 
