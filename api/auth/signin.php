@@ -43,6 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($username === NULL || $password === NULL) {
         echo json_encode(["error" => "invalid data"]);
+        http_response_code(401);
         exit();
     }
 

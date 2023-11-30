@@ -18,6 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($data === NULL) {
         echo json_encode(["error" => "invalid data"]);
+        http_response_code(401);
         exit();
     }
 
@@ -27,6 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($username === NULL || $email === NULL || $password === NULL) {
         echo json_encode(["error" => "invalid data"]);
+        http_response_code(401);
         exit();
     }
 
@@ -38,6 +40,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $username = mysqli_real_escape_string($conn, $username);
     $email = mysqli_real_escape_string($conn, $email);
     $password = mysqli_real_escape_string($conn, $password);
+
+    $sql = "SELECT * FROM users WHERE username = '$username' OR email = '$email';";
+    $result = mysqli_query($conn, $sql);
+
+    if (!$result) {
+        die("error: " . mysqli_error($conn));
+    }
+
+    if (mysqli_num_rows($result) != 0) {
+        echo json_encode(["message" => "invalid credentials"]);
+        http_response_code(401);
+        exit();
+    }
 
     $sql = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$password');";
     if (!mysqli_query($conn, $sql)) {
