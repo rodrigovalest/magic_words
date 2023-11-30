@@ -1,6 +1,7 @@
 <?php
 
-function decodeJWT($jwt) {
+function decodeJWT($jwt)
+{
     $secretKey = "123mudar";
 
     $parts = explode('.', $jwt);
@@ -20,7 +21,7 @@ function decodeJWT($jwt) {
     return $decodedPayload;
 }
 
-header("Access-Control-Allow-Origin: http://localhost");
+header("Access-Control-Allow-Origin: http://localhost:8000");
 header("Access-Control-Allow-Methods: GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");

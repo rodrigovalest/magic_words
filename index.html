@@ -16,9 +16,16 @@
         <h1 id="title">Magic Words</h1>
         <img src="./images/Tower.png" alt="" id="tower" class="titleScreen">
         <div id="button-group">
-            <a href="./auth/signup"><button class="button">Sign Up</button></a>
-            <a href="./auth/signin"><button class="button">Login</button></a>
-            <a href="./scoreboard/"><button class="button">Leaderboard</button></a>
+            <a href="./auth/signup" class="with_no_login"><button class="button">Sign Up</button></a>
+            <a href="./auth/signin" class="with_no_login"><button class="button">Login</button></a>
+            <a href="./scoreboard/" class="with_no_login"><button class="button">Leaderboard</button></a>
+            <div id="gamemodes" class="with_login">
+                <a href="./game/mode1/StairsMode.html"><button class="button gameButton">Stairs</button></a>
+                <span id="gamemodeText">MODE</span>
+                <a href="./game/mode2/RandomMode.html"><button class="button gameButton">Random</button></a>
+            </div>
+            <a href="./scoreboard/" class="with_login"><button class="button">Leaderboard</button></a>
+            <a href="./auth/signout/index.html" class="with_login"><button class="button">Log Out</button></a>
         </div>
 
     </div>
@@ -34,25 +41,61 @@
     <!-- Base -->
 </body>
 <script>
-    let isTvOn = false;
+    let isTvOn = true;
+    const login = document.getElementsByClassName('with_login');
+    const no_login = document.getElementsByClassName('with_no_login');
     function TurnTv() {
         const title = document.getElementsByClassName('titleScreen');
         if (isTvOn) {
             for (let index = 0; index < title.length; index++) {
-                title[index].style.visibility = 'hidden';
+                title[index].style.display = 'none';
             }
             document.getElementById('powerButton').style.backgroundColor = "red";
             document.getElementById('powerButton').style.borderColor = "darkred";
             isTvOn = false;
         } else {
             for (let index = 0; index < title.length; index++) {
-                title[index].style.visibility = 'visible';
+                title[index].style.display = 'block';
             }
             document.getElementById('powerButton').style.backgroundColor = "green";
             document.getElementById('powerButton').style.borderColor = "darkgreen";
             isTvOn = true;
         }
     }
+
+    token = localStorage.getItem("token");
+
+    if (!token) {
+        for (let index = 0; index < login.length; index++) {
+            login[index].style.display = 'none';
+        }
+        for (let index = 0; index < no_login.length; index++) {
+            no_login[index].style.display = 'block';
+        }
+    } else {
+        for (let index = 0; index < login.length; index++) {
+            login[index].style.display = 'block';
+        }
+        for (let index = 0; index < no_login.length; index++) {
+            no_login[index].style.display = 'none';
+        }
+    }
+
+    fetch("http://localhost:8000/web1-trabfinal/api/auth/validate_token.php", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: token
+        }
+    })
+        .then((res) => res.json())
+        .then((data) => {
+            console.log(data);
+        })
+        .catch((err) => {
+            console.err(err);
+        });
+
 </script>
 
 </html>
