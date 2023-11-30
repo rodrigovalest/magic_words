@@ -1,28 +1,12 @@
 <?php
 
 require_once("../../credentials.php");
+require_once("../token.php");
 
 header("Access-Control-Allow-Origin: http://localhost");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
-
-function generateJWT($payload) {
-    $secretKey = "123mudar";
-
-    $header = json_encode(['alg' => 'HS256', 'typ' => 'JWT']);
-    $header = base64_encode($header);
-
-    $payload = json_encode($payload);
-    $payload = base64_encode($payload);
-
-    $signature = hash_hmac('sha256', "$header.$payload", $secretKey, true);
-    $signature = base64_encode($signature);
-
-    $jwt = "$header.$payload.$signature";
-
-    return $jwt;
-}
 
 if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
     header("HTTP/1.1 200 OK");
