@@ -57,6 +57,7 @@ $sql = "CREATE TABLE matches (
     user_id INTEGER NOT NULL,
     league_id INTEGER,
     score INTEGER NOT NULL,
+    mode ENUM ('stairs', 'random') NOT NULL,
     datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (league_id) REFERENCES leagues (id)
@@ -64,6 +65,19 @@ $sql = "CREATE TABLE matches (
 
 if (mysqli_query($conn, $sql)) {
     echo "Match table created successfully<br>";
+} else {
+    echo "Error creating schema: " . mysqli_error($conn) . "<br>";
+}
+
+$sql = "CREATE TABLE user_league (
+    user_id INTEGER NOT NULL,
+    league_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (league_id) REFERENCES leagues (id)
+);";
+
+if (mysqli_query($conn, $sql)) {
+    echo "user_league table created successfully<br>";
 } else {
     echo "Error creating schema: " . mysqli_error($conn) . "<br>";
 }
