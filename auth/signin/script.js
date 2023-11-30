@@ -20,10 +20,10 @@ const fetchCredentials = async () => {
         localStorage.removeItem("token");
         return;
     }
-  
+
     const data = await response.json();
+    console.log(data);
 
     token = data.data;
     localStorage.setItem("token", token);
-    
 };
