@@ -38,10 +38,9 @@ if (mysqli_query($conn, $sql)) {
 
 $sql = "CREATE TABLE leagues (
     id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
     user_owner_id INTEGER NOT NULL,
     password VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    end_at TIMESTAMP NOT NULL,
     FOREIGN KEY (user_owner_id) REFERENCES users (id)
 );";
 
@@ -55,12 +54,10 @@ if (mysqli_query($conn, $sql)) {
 $sql = "CREATE TABLE matches (
     id INTEGER AUTO_INCREMENT PRIMARY KEY,
     user_id INTEGER NOT NULL,
-    league_id INTEGER,
     score INTEGER NOT NULL,
     mode ENUM ('stairs', 'random') NOT NULL,
     datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users (id),
-    FOREIGN KEY (league_id) REFERENCES leagues (id)
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );";
 
 if (mysqli_query($conn, $sql)) {
@@ -78,6 +75,19 @@ $sql = "CREATE TABLE user_league (
 
 if (mysqli_query($conn, $sql)) {
     echo "user_league table created successfully<br>";
+} else {
+    echo "Error creating schema: " . mysqli_error($conn) . "<br>";
+}
+
+$sql = "CREATE TABLE match_league (
+    match_id INTEGER NOT NULL,
+    league_id INTEGER NOT NULL,
+    FOREIGN KEY (match_id) REFERENCES matches (id),
+    FOREIGN KEY (league_id) REFERENCES leagues (id)
+);";
+
+if (mysqli_query($conn, $sql)) {
+    echo "match_league table created successfully<br>";
 } else {
     echo "Error creating schema: " . mysqli_error($conn) . "<br>";
 }

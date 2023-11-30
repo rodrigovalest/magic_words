@@ -608,7 +608,6 @@ function step() {
         downCount++;
     }
 
-    //Tempo do jogo avança e Recomeça essa função
     tempo++;
     requestAnimationFrame(step);
 }

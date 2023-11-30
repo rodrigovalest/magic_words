@@ -10,6 +10,31 @@ function invert(s) {
     return s.split("").reverse().join("");
 }
 
+const fetchCredentials = async () => {
+    let playerscore = score;
+    let mode = "stairs";
+    let credentials = {
+        "score": playerscore,
+        "mode": mode,
+    }
+
+    const response = await fetch("http://localhost:8000/web1-trabfinal/api/match/index.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(credentials)
+    });
+
+    if (!response.ok) {
+        alert("Something went wrong. Try again!");
+        return;
+    }
+
+    const data = await response.json();
+    console.log(data);
+};
+
 function drawStroked(text, x, y) {
     ctx.font = "80px Jockey One"
     ctx.strokeStyle = 'black';
@@ -30,7 +55,6 @@ function gameOverStep() {
     document.getElementById("Recomeçar").style.display = "block";
 
     ctx.clearRect(0, 0, wCanvas, hCanvas);
-    console.log("gameOver")
     if (score >= 500) {
         red = red >= 0 ? red - 1 : 0;
         green = green >= 0 ? green - 1 : 0;
@@ -564,6 +588,7 @@ function step() {
             console.log("Acabou");
             //playStop();
             gameOver = true;
+            fetchCredentials();
             gameOverStep();
             //ctx.clearRect(0, 0, wCanvas, hCanvas);
             return;
@@ -619,6 +644,20 @@ function step() {
         character.x = lastTypedWord.x - 20 + ((lastTypedWord.width - 30) / 2);
         downCount++;
     }
+
+    // ctx.fillStyle = "white";
+    // ctx.strokeStyle = "black";
+    // ctx.lineWidth = 5;
+    // ctx.beginPath();
+    // ctx.roundRect(10, 10, 110, 20);
+    // ctx.stroke();
+    // ctx.fill();
+
+    //A word
+    // ctx.fillStyle = "black";
+    // ctx.font = "16px Jockey One";
+    // ctx.fillText("Pontuação :", 20, 25);
+    // ctx.fillText(score, 105, 25);
 
     //Tempo do jogo avança e Recomeça essa função
     tempo++;
