@@ -17,21 +17,24 @@
         <img src="../images/Tower.png" alt="" id="tower" class="titleScreen">
         <div id="bgshadow">
             <div id="tableBg">
-                <form action="" style="width: 480px;margin: 10px;" id="form">
+                <div action="./" style="width: 480px;margin: 10px;" id="form">
                     <div>
                         <div class="form-group" style="width: 120px;left: 10px;">
-                            <input class="form-checkbox" type="checkbox">
+                            <input class="form-checkbox" type="checkbox" id="semanal">
                             <div class="form-label" style="top: -125%;"><span>Semanal</span></div>
                         </div>
-                        <div class="form-group" style="width: 310px;left: 150px;">
-                            <select name="mode" id="form-select" style="top: 10%;width: 240px;">
+                        <input type="text" value="teste" style="display: none;" id="league_name">
+                        <div class="form-group" style="width: 200px;left: 150px;">
+                            <select name="mode" id="form-select" style="top: 10%;width: 120px;">
                                 <option value="mode1">Stairs</option>
                                 <option value="mode2">Random</option>
                             </select>
                             <div class="form-label" style="top: -98%; width: 50px;"><span>Modo</span></div>
                         </div>
+                        <button class="button button-small" onclick="view()"
+                            style="width: 90px;left: 360px;position: relative; top: -13px;">Pesquisar</button>
                     </div>
-                </form>
+                </div>
                 <div id="tableDiv">
                     <table id="tabela" border="2">
                         <tr>
@@ -64,8 +67,9 @@
     <img src="../images/DoodleJumpFrame.png" alt="" id="doodle">
     <img src="../images/Window.png" alt="" id="window">
 </body>
+<script src="./view.js"></script>
 <script src="./script.js"></script>
 <script src="../global_script.js"></script>
-
+<script>view(); </script>
 
 </html>

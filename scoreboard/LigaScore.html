@@ -20,74 +20,28 @@
                 <form action="" style="width: 480px;margin: 10px;" id="form">
                     <div>
                         <div class="form-group" style="width: 120px;left: 10px;">
-                            <input class="form-checkbox" type="checkbox">
+                            <input class="form-checkbox" type="checkbox" id="semanal">
                             <div class="form-label" style="top: -125%;"><span>Semanal</span></div>
                         </div>
-                        <div class="form-group" style="width: 310px;left: 150px;">
-                            <select name="mode" id="form-select" style="top: 10%;width: 240px;">
+                        <input type="text" value="teste" style="display: none;" id="league_name">
+                        <div class="form-group" style="width: 200px;left: 150px;">
+                            <select name="mode" id="form-select" style="top: 10%;width: 120px;">
                                 <option value="mode1">Stairs</option>
                                 <option value="mode2">Random</option>
                             </select>
                             <div class="form-label" style="top: -98%; width: 50px;"><span>Modo</span></div>
                         </div>
+                        <button class="button button-small" onclick="view()"
+                            style="width: 90px;left: 360px;position: relative; top: -13px;">Pesquisar</button>
                     </div>
                 </form>
                 <div id="tableDiv" style="height: 70%;top: 15%;">
                     <table id="tabela" border="2">
                         <tr>
-                            <th>Company</th>
-                            <th>Contact</th>
-                            <th>Country</th>
-                        </tr>
-                        <tr>
-                            <td>Alfreds Futterkiste</td>
-                            <td>Maria Anders</td>
-                            <td>Germany</td>
-                        </tr>
-                        <tr>
-                            <td>Berglunds snabbköp</td>
-                            <td>Christina Berglund</td>
-                            <td>Sweden</td>
-                        </tr>
-                        <tr>
-                            <td>Centro comercial Moctezuma</td>
-                            <td>Francisco Chang</td>
-                            <td>Mexico</td>
-                        </tr>
-                        <tr>
-                            <td>Ernst Handel</td>
-                            <td>Roland Mendel</td>
-                            <td>Austria</td>
-                        </tr>
-                        <tr>
-                            <td>Island Trading</td>
-                            <td>Helen Bennett</td>
-                            <td>UK</td>
-                        </tr>
-                        <tr>
-                            <td>Königlich Essen</td>
-                            <td>Philip Cramer</td>
-                            <td>Germany</td>
-                        </tr>
-                        <tr>
-                            <td>Laughing Bacchus Winecellars</td>
-                            <td>Yoshi Tannamuri</td>
-                            <td>Canada</td>
-                        </tr>
-                        <tr>
-                            <td>Magazzini Alimentari Riuniti</td>
-                            <td>Giovanni Rovelli</td>
-                            <td>Italy</td>
-                        </tr>
-                        <tr>
-                            <td>North/South</td>
-                            <td>Simon Crowther</td>
-                            <td>UK</td>
-                        </tr>
-                        <tr>
-                            <td>Paris spécialités</td>
-                            <td>Marie Bertrand</td>
-                            <td>France</td>
+                            <th>Nome</th>
+                            <th>Pontuação</th>
+                            <th>Modo</th>
+                            <th>Dia</th>
                         </tr>
                     </table>
                 </div>

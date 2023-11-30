@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
     exit();
 }
 
-if ($_SERVER["REQUEST_METHOD"] === "GET") {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Pegar nome da liga e filtros para mostrar
     $json = file_get_contents("php://input");
     $data = json_decode($json);
@@ -61,8 +61,8 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
         $sql = "SELECT matches.* FROM matches, match_league, leagues
             WHERE matches.id = match_league.match_id AND leagues.id = match_league.league_id 
             ORDER BY matches.score DESC LIMIT 50;";
-        $result = mysqli_query($conn, $sql);    
-            
+        $result = mysqli_query($conn, $sql);
+
         if (!$result) {
             die("error: " . mysqli_error($conn));
         }
@@ -77,14 +77,14 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
         echo json_encode(["message" => "matches not weekly any mode", "matches" => $matches]);
         exit();
     }
-        
+
     if (!$weekly && $mode != "any") {
         $sql = "SELECT matches.* FROM matches, match_league, leagues 
             WHERE matches.id = match_league.match_id AND leagues.id = match_league.league_id AND mode = '$mode' 
             ORDER BY score DESC LIMIT 50";
 
-        $result = mysqli_query($conn, $sql);    
-            
+        $result = mysqli_query($conn, $sql);
+
         if (!$result) {
             die("error: " . mysqli_error($conn));
         }
@@ -103,8 +103,8 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     if ($weekly && $mode == "any") {
         $sql = "SELECT matches.* FROM matches, match_league, leagues
             WHERE matches.id = match_league.match_id AND leagues.id = match_league.league_id AND WEEK(datetime) = WEEK(NOW()) ORDER BY score DESC LIMIT 50";
-        $result = mysqli_query($conn, $sql);    
-            
+        $result = mysqli_query($conn, $sql);
+
         if (!$result) {
             die("error: " . mysqli_error($conn));
         }
@@ -119,14 +119,14 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
         echo json_encode(["message" => "matches weekly any mode", "matches" => $matches]);
         exit();
     }
-        
+
     if ($weekly && $mode != "any") {
         $sql = "SELECT matches.* FROM matches, match_league, leagues
             WHERE mode = '$mode' AND matches.id = match_league.match_id AND leagues.id = match_league.league_id AND WEEK(datetime) = WEEK(NOW())
             ORDER BY score DESC LIMIT 50";
 
-        $result = mysqli_query($conn, $sql);    
-            
+        $result = mysqli_query($conn, $sql);
+
         if (!$result) {
             die("error: " . mysqli_error($conn));
         }
