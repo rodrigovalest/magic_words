@@ -50,6 +50,11 @@ cp credentials.example.php credentials.php;
 -- [Add] Parte de Manual e Créditos feito com Bootstrap
 -- [Mod] Fontes dos texto
 -- [Mod] Reorganização da parte de cima da tela para não hover conflitos com zoom
+
+- A se Fazer 
+-- Atualizar todas as telas com a parte do manual e Creditos
+-- Concertar as telas de Leaderboard
+
 ---
 Rodrigo do Vale Stankowicz
 Matheus Nunes Santana
