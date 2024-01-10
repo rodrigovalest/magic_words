@@ -36,14 +36,14 @@ const fetchCredentials = async () => {
     console.log(data);
 };
 
-function drawStroked(text, x, y) {
-    ctx.font = "80px Jockey One"
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = 8;
+function drawStroked(text, x, y, font, stroke, fill, line) {
+    ctx.font = font;
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = line;
     ctx.lineJoin = "miter";
     ctx.miterLimit = 2;
     ctx.strokeText(text, x, y);
-    ctx.fillStyle = 'white';
+    ctx.fillStyle = fill;
     ctx.fillText(text, x, y);
 }
 
@@ -52,11 +52,9 @@ function gameOverStep() {
         ctx.clearRect(0, 0, wCanvas, hCanvas);
         return;
     }
-    document.getElementById("Voltar").style.display = "block";
-    document.getElementById("Recomeçar").style.display = "block";
-
+    document.getElementById("gameover").style.display = "block";
+    document.getElementById("textscore").style.display = "none";
     ctx.clearRect(0, 0, wCanvas, hCanvas);
-    console.log("gameOver")
     if (score >= 500) {
         red = red >= 0 ? red - 1 : 0;
         green = green >= 0 ? green - 1 : 0;
@@ -64,7 +62,8 @@ function gameOverStep() {
         updateBackground(red, green, blue);
     } else {
 
-        updateBackground(166, 191, 207);
+        updateBackground(red, green, blue);
+
         if (tempo % 350 == 0 && !onStarterPosition) {
             let randomCloudSide = parseInt(Math.random() * 2);
             let randomCloud = getRandomInt(0, 5);
@@ -106,20 +105,27 @@ function gameOverStep() {
     ctx.drawImage(Bg, 0, 0, wCanvas, hCanvas, wCanvas / 4, (-hCanvas) + downCount / 3 + 10, wCanvas * 2, hCanvas * 2);
     ctx.drawImage(groundSprite, 0, 0, 600, 90, -20, hCanvas - 90 + downCount / 3, wCanvas + 80, 90);
 
-    drawStroked("Game Over", wCanvas / 5, hCanvas / 3);
+    drawStroked("Game Over", wCanvas / 5, hCanvas / 3, "80px Jockey One", 'black', 'white', 8);
+    drawStroked("Pontuação Final : " + score, wCanvas / 4, hCanvas / 1.7, "36px Jockey One", 'black', 'white', 8);
     requestAnimationFrame(gameOverStep);
 }
 
 function playStop() {
 
-    document.getElementById("Voltar").style.display = "none";
-    document.getElementById("Recomeçar").style.display = "none";
+    document.getElementById("gameover").style.display = "none";
+    document.getElementById("textscore").style.display = "flex";
+    document.getElementById("score").textContent = 0;
     //Permite começar o jogo e Reseta o tempo
     gameOver = false;
     tempo = 0;
 
     //Cria uma nuvem para o personagem ficar no começo do jogo enquanto estiver parado e Posiciona o Player no centro-baixo da tela
     onStarterPosition = true;
+    revived = false;
+    is_playing = false;
+    downCount = 1;
+    gravity = 1;
+    timer_to_go = 0;
     character.x = wCanvas / 2 - spriteWitchWidth;
     character.y = hCanvas - spriteWitchHeight;
 
@@ -130,6 +136,7 @@ function playStop() {
 
     //Reseta a velocidade das plataformas e a array das nuvens
     platSpeed = 5;
+    platCool = 699;
     cloudArray = [];
 
     //Reseta o score
@@ -141,6 +148,21 @@ function playStop() {
 
     //Começa a rodar o jogo
     step();
+}
+
+function pause() {
+    if (paused) {
+        paused = false;
+        document.getElementById("pause_icon").textContent = "pause"
+        document.getElementById("pause").style.backgroundColor = "white";
+        document.getElementById("pause").style.color = "black";
+        step();
+    } else {
+        paused = true;
+        document.getElementById("pause_icon").textContent = "play_arrow"
+        document.getElementById("pause").style.backgroundColor = "black";
+        document.getElementById("pause").style.color = "white";
+    }
 }
 
 //Array das palavras - [Futuro banco de dados]
@@ -202,6 +224,7 @@ let gameOver = false;
 const droppingWords = [];
 let typingWord = "";
 let lastTypedWord = "";
+let paused = false;
 
 //Seta a imagem de fundo
 const Bg = new Image();
@@ -216,7 +239,7 @@ var bgOpacity = 0;
 var spaceBgY = [0, - hCanvas];
 
 //Variaveis de Cor e passos(utilizado quando que trocar entre varias cores)
-var red = 166, green = 191, blue = 207, steps = 1;
+var red = 135, green = 206, blue = 250, steps = 1;
 
 //Funcão para mudar a cor um um valor da RGB e a outra que utiliza de variaveis para criar uma cor RGB
 function changeColor(color, increase) {
@@ -232,9 +255,13 @@ cloudSprite.src = "../images/CloudSprite.png";
 
 //Seta as variaveis da situação onde o jogador ainda não saiu do chão/nuvem inicial , a posicão da nuvem inicial, e o seu movimento para baixo
 let onStarterPosition = true;
+let revived = false;
 let cloudX;
 let groundY;
 let downCount = 3;
+let timer_to_go = 0;
+let is_playing = false;
+let gravity = 1;
 
 //Seta a imagem da nuvem que fica passando no Background
 const cloudSpriteBG = new Image();
@@ -337,9 +364,11 @@ const character = {
 let oneLife = false;
 let scoreMult = 1;
 let speedMult = 1;
-let powerupTimer = 0;
+let powerupTimer = [0, 0];
 let activatePower = false;
 let types = ["2x", "+1", "Shield", "Reverse", "NoVogals", "Death", "Normal", "Normal", "Normal", "Normal"];
+let shield = false;
+let double_points = false;
 
 //Classe que é utilizada para criar objetos Word
 //Word tem: a palavra em si, a posição no canvas, se foi digitada e o seu tamanho, alem de sua velocidade, tipo, cores de sua caixa e texto
@@ -354,7 +383,7 @@ class classWord {
         this.speed = speed;
         this.type = type;
         this.boxColor = "rgba(226, 221, 224, 0.7)";
-        this.textColor = "black";
+        this.textColor = "white";
         this.isPlayerOn = false;
     }
 }
@@ -363,12 +392,16 @@ class classWord {
 //E a velocidade da plataforma
 const platPlaces = [(wCanvas / 3) - 70, (wCanvas / 2), (wCanvas / 1.5) + 64];
 let platChoosePlace = 0;
-let platSpeed = 8;
+let platSpeed = 5;
 let platCount = 0;
+let platCool = 699;
 
 
 function step() {
 
+    if (paused || gameOver) {
+        return;
+    }
     ctx.fillStyle = "lightgray";
     ctx.font = "16px Arial";
     //Limpa o Canvas e desenha o background
@@ -384,7 +417,7 @@ function step() {
 
         //Caso não, a cor de fundo será um azul, e cada 6 segundos +/- cria uma nuvem aleatoria, joga um cara ou coroa para decidir
         // Se a nuvem vai nascer em qual lado, e adicione ela na array que fará o processo de animar ela
-        updateBackground(166, 191, 207);
+        updateBackground(red, green, blue);
         if (tempo % 350 == 0 && !onStarterPosition) {
             let randomCloudSide = parseInt(Math.random() * 2);
             let randomCloud = getRandomInt(0, 5);
@@ -401,6 +434,8 @@ function step() {
         }
 
     }
+    //Desenha o Fundo
+    ctx.fillRect(0, 0, wCanvas, hCanvas);
 
     //Quando o fundo Estiver preto, comece a desenhar as estrelas, fazendo elas aparecerem usando a opacidade
     //Funciona tendo duas imagens, que ficam em ciclo descendo uma em cima da outra, se um chega no fim, volta para o começo
@@ -413,9 +448,6 @@ function step() {
         spaceBgY[1] = spaceBgY[1] >= hCanvas ? -hCanvas : spaceBgY[1] += 1 / 5;
         ctx.globalAlpha = 1;
     }
-
-    //Desenha o Fundo
-    ctx.fillRect(0, 0, wCanvas, hCanvas);
 
     //Para cada Instacia de nuvem na array, crie uma nuvemBG,fazendo que ela vá para direita ou esquerda dependendo do valor de cloudInst.side
     //e para baixo, caso chegue nas extremidades apague da array para parar de animar-la 
@@ -434,7 +466,7 @@ function step() {
 
     //Quando o tempo chegar num tempo especifico, crie entre 1 e 3 word, com tipo aleatorio, velocidade e local
     //e adicione ela na array wrds, depois cheque o tipo dela e mude as suas cores (e textos)
-    if (tempo % 300 == 0) {
+    if (platCool >= (1101 - (Math.floor(platSpeed) * 100))) {
 
         //Há tres possiveis locais onde uma plataforma pode cair, para que cada uma não fique uma em cima da outra
         //No começo do jogo um desses locais é escolhido como o local da plaforma de inicio ...
@@ -447,8 +479,8 @@ function step() {
                 types[getRandomInt(0, types.length)]);
 
             //A cada ciclo,vai aumentando a velocidade que as palavras vão diminuindo em 0.1
-            if (platSpeed <= 20) {
-                platSpeed += 0.1;
+            if (platSpeed <= 10) {
+                platSpeed += 0.05;
             }
 
             //... E ja que podem ser criados até 3 plataformas,o seguite codigo funciona para fazer um ciclo, caso aconteça
@@ -461,24 +493,24 @@ function step() {
                 //Em caso que mudam a palavra, afetam diretamente a palavra
                 case "Reverse":
                     word.word = invert(word.word);
-                    word.textColor = "Maroon";
+                    word.textColor = "violet";
                     break;
                 case "NoVogals":
                     word.word = word.word.replace(/[aeiou]/gi, '');
-                    word.textColor = "purple";
+                    word.textColor = "Salmon";
                     break;
 
                 case "Death":
                     word.textColor = "red";
                     break;
                 case "+1":
-                    word.textColor = "green";
+                    word.textColor = "limegreen";
                     break;
                 case "2x":
-                    word.textColor = "SlateGray";
+                    word.textColor = "yellow";
                     break;
                 case "Shield":
-                    word.textColor = "deeppink";
+                    word.textColor = "cyan";
                     break;
                 default:
                     break;
@@ -488,6 +520,7 @@ function step() {
             word.width = ctx.measureText(word.word).width;
             droppingWords.push(word);
         }
+        platCool = 0;
     }
 
     //Para cada item que tem na array wrds
@@ -517,73 +550,47 @@ function step() {
                 ctx.fill();
 
                 //A word
-                ctx.fillStyle = word.textColor;
-                ctx.font = "16px Jockey One";
-                ctx.fillText(word.word, word.x, word.y);
+                drawStroked(word.word, word.x, word.y, "16px Jockey One", 'black', word.textColor, 4);
 
                 //E a palavra que está sendo digitada pelo player em vermelho em cima da word
-                ctx.fillStyle = "red";
+                ctx.fillStyle = "gray";
                 ctx.font = "16px Jockey One";
                 ctx.fillText(typingWord, word.x, word.y);
             }
         }
 
-        //Se o power up for ativo
-        if (activatePower) {
-            //Se for do typo 2x, dobra os ganhos pontos, se for protecao, diminui a velocidade da gravidade das plataformas
-            if (word.type == "2x") {
-                scoreMult = 2;
-            } else if (word.type == "Shield") {
-                speedMult = 0.5;
-            }
-
-            //Roda o timer, quando chegar num tempo especifico acaba o power up
-            if (powerupTimer < 360) {
-                powerupTimer++;
-            } else {
-                powerupTimer = 0;
-                activatePower = 0;
-            }
-        } else {
-
-            //Se o Power up estiver desligado, seta aos valores normais
-            if (word.type == "2x") {
-                scoreMult = 1;
-            } else if (word.type == "Shield") {
-                speedMult = 1;
-            }
-        }
     });
 
+    if (shield) {
+        document.getElementById("shield").style.display = "block";
+        speedMult = 0.5;
+    } else {
+        speedMult = 1;
+        document.getElementById("shield").style.display = "none";
+    }
+
+    if (double_points) {
+        document.getElementById("duas_vezes").style.display = "block";
+        scoreMult = 2;
+    } else {
+        scoreMult = 1;
+        document.getElementById("duas_vezes").style.display = "none";
+    }
+
+    if (powerupTimer[0] > 0) {
+        powerupTimer[0]--;
+    } else {
+        shield = false;
+    }
+    if (powerupTimer[1] > 0) {
+        powerupTimer[1]--;
+    } else {
+        double_points = false;
+    }
+
     //Se a ultima palavra que foi digitada, ou ligue o power up, ou ganhe uma vida
-    switch (lastTypedWord.type) {
-        case "+1":
-            oneLife = true;
-            break;
-        case "2x":
-            activatePower = true;
-            break;
-        case "Shield":
-            activatePower = true;
-    }
-
+    document.getElementById("vida").style.display = oneLife ? "block" : "none";
     //Se o jogador chegou no na parte debaixo do canvas ou digitou a palavra que mata, ele perde e a tela é limpada
-    if (character.y > (hCanvas + 60) || lastTypedWord.type == "Death") {
-
-        //Se ele tiver mais uma vida, ele volta para a posicão inicial
-        if (oneLife) {
-            onStarterPosition = true;
-            oneLife = false;
-        } else {
-            console.log("Acabou");
-            //playStop();
-            gameOver = true;
-            fetchCredentials();
-            gameOverStep();
-            //ctx.clearRect(0, 0, wCanvas, hCanvas);
-            return;
-        }
-    }
 
     //Se tempo chegou em um multiplo de Framecount - Proximo frame
     if (tempo % frameCount == 0) {
@@ -610,46 +617,54 @@ function step() {
         drawWitchChargeFrame(currentLoopIndex, character.x, character.y - 105);
     }
 
-    //Se é para estar na posição incial
-    if (onStarterPosition) {
-
-        //Desenha o Chão e o coloca o player na parte de baixo no meio da tela
-        downCount = 3;
-        character.x = wCanvas / 2 - spriteWitchWidth;
-        character.y = hCanvas - 70;
-        groundY = character.y;
-        ctx.drawImage(groundSprite, 0, 0, 600, 90, -20, hCanvas - 90, wCanvas + 80, 90);
-
-    } else if (!onStarterPosition && groundY + (downCount / 3) < (hCanvas + 10)) {
-
-        //Se não comece a levar o chão para baixo e desenhar coloca o player na nuvem no qual ele digitou 
-        ctx.drawImage(groundSprite, 0, 0, 600, 90, -20, hCanvas - 90 + downCount / 3, wCanvas + 80, 90);
-        downCount++;
-        character.y = lastTypedWord.y + 6;
+    if (is_playing) {
+        character.y = lastTypedWord.y + 12;
         character.x = lastTypedWord.x - 20 + ((lastTypedWord.width - 30) / 2);
     } else {
-
-        //E se o chão ja sumiu, só coloca o player na nuvem no qual ele digitou
-        character.y = lastTypedWord.y + 6;
-        character.x = lastTypedWord.x - 20 + ((lastTypedWord.width - 30) / 2);
-        downCount++;
+        timer_to_go++;
+        character.x = wCanvas / 2 - spriteWitchWidth;
+        character.y = hCanvas - 70 + gravity / 3;
+        groundY = character.y;
+        cloudX = character.x;
     }
 
+    if (timer_to_go >= 650 || is_playing) {
+        gravity++;
+        downCount++;
+        if (onStarterPosition && groundY + (gravity / 3) < (hCanvas + 100)) {
+            ctx.drawImage(groundSprite, 0, 0, 600, 90, -20, hCanvas - 90 + gravity / 3, wCanvas + 80, 90);
+        } else if (revived && groundY + (gravity / 3) < (hCanvas + 100)) {
+            ctx.drawImage(cloudSprite, 0, 0, 221, 93, cloudX + spriteWitchWidth / 5, character.y - 4, 64, 38);
+        } else {
+            onStarterPosition = false;
+            revived = false;
+        }
+    } else {
+        gravity = 1;
+        if (onStarterPosition) {
+            ctx.drawImage(groundSprite, 0, 0, 600, 90, -20, hCanvas - 90, wCanvas + 80, 90);
+        } else if (revived) {
+            ctx.drawImage(cloudSprite, 0, 0, 221, 93, cloudX + spriteWitchWidth / 5, character.y - 4, 64, 38);
+        }
+    }
 
-    ctx.fillStyle = "white";
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 5;
-    ctx.beginPath();
-    ctx.roundRect(10, 10, 110, 20);
-    ctx.stroke();
-    ctx.fill();
-
-    //A word
-    ctx.fillStyle = "black";
-    ctx.font = "16px Jockey One";
-    ctx.fillText("Pontuação :", 20, 25);
-    ctx.fillText(score, 105, 25);
-
+    if (character.y > (hCanvas + 60)) {
+        //Se ele tiver mais uma vida, ele volta para a posicão inicial
+        if (oneLife) {
+            is_playing = false;
+            timer_to_go = 0;
+            revived = true;
+            gravity = 1;
+            oneLife = false;
+        } else {
+            console.log("Acabou");
+            gameOver = true;
+            fetchCredentials();
+            gameOverStep();
+            return;
+        }
+    }
+    platCool++;
     tempo++;
     requestAnimationFrame(step);
 }
@@ -679,18 +694,47 @@ document.addEventListener("keypress", function (event) {
 
                 //Adiciona a pontuação
                 score += 10 * scoreMult;
+                document.getElementById("score").textContent = score;
                 //Reseta a string que esta sendo digitada,confirma que essa palavra foi digitada, essa palavra digitada é guardada
                 //Ja que ele ira mudar de posicao, ele nao esta mais na posicao inicial
                 typingWord = "";
                 droppingWords[k].typed = true;
-                console.log(lastTypedWord);
                 if (lastTypedWord != "" || lastTypedWord != null || lastTypedWord != undefined) {
-                    console.log(lastTypedWord, lastTypedWord.speed);
                     lastTypedWord.speed = 10;
                 }
                 lastTypedWord = droppingWords[k];
-                onStarterPosition = false;
+                is_playing = true;
+                //Se a ultima palavra que foi digitada, ou ligue o power up, ou ganhe uma vida
+                switch (lastTypedWord.type) {
+                    case "+1":
+                        oneLife = true;
+                        break;
+                    case "2x":
+                        double_points = true;
+                        powerupTimer[1] = 1400;
+                        break;
+                    case "Shield":
+                        shield = true;
+                        powerupTimer[0] = 600;
+                        break;
+                    case "Death":
+                        if (oneLife) {
+                            is_playing = false;
+                            timer_to_go = 0;
+                            revived = true;
+                            gravity = 1;
+                            lastTypedWord.type == "Normal";
+                            oneLife = false;
+                        } else {
+                            console.log("Acabou");
+                            gameOver = true;
+                            fetchCredentials();
+                            gameOverStep();
+                            return;
+                        }
 
+                        break;
+                }
 
             }
         }
