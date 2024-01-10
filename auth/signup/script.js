@@ -9,7 +9,7 @@ const fetchCredentials = async () => {
         "password": password
     }
 
-    const response = await fetch("http://localhost:8000/web1-trabfinal/api/auth/signup.php", {
+    const response = await fetch("http://localhost/web1-trabfinal/api/auth/signup.php", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

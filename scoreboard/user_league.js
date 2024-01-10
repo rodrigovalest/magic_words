@@ -1,6 +1,6 @@
 const league = async () => {
     console.log(localStorage.getItem("token"));
-    const response = await fetch("http://localhost:8000/web1-trabfinal/api/league/user_leagues.php", {
+    const response = await fetch("http://localhost/web1-trabfinal/api/league/user_leagues.php", {
         method: "get",
         headers: {
             "Content-Type": "application/json",

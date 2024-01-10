@@ -6,7 +6,7 @@ const create = async () => {
         "name": name,
         "password": password
     }
-    const response = await fetch("http://localhost:8000/web1-trabfinal/api/league/create.php", {
+    const response = await fetch("http://localhost/web1-trabfinal/api/league/create.php", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -32,7 +32,7 @@ const enter = async () => {
         "league_name": name,
         "league_senha": password
     }
-    const response = await fetch("http://localhost:8000/web1-trabfinal/api/league/enter.php", {
+    const response = await fetch("http://localhost/web1-trabfinal/api/league/enter.php", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

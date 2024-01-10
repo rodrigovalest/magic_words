@@ -7,7 +7,7 @@ const view = async () => {
         "mode": mode,
         "league_name": league_name
     }
-    const response = await fetch("http://localhost:8000/web1-trabfinal/api/league/view.php", {
+    const response = await fetch("http://localhost/web1-trabfinal/api/league/view.php", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

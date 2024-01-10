@@ -18,7 +18,7 @@ const fetchCredentials = async () => {
         "mode": mode,
     }
 
-    const response = await fetch("http://localhost:8000/web1-trabfinal/api/match/index.php", {
+    const response = await fetch("http://localhost/web1-trabfinal/api/match/index.php", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
