@@ -14,9 +14,5 @@ function TurnTv(local) {
 }
 
 function scrollToTop() {
-    var rootElement = document.documentElement;
-    rootElement.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    })
+    window.location.href = local;
 }
