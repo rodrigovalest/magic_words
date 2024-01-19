@@ -400,7 +400,6 @@ SpriteWitchIdle.src = "../images/SpriteWitchIdle.png";
 const SpriteWitchCharge = new Image();
 SpriteWitchCharge.src = "../images/SpriteWitchCharge.png";
 
-
 //Seta as dimensoes da imagem da bruxinha.Sendo um especial para ela fazendo magia
 const spriteWitchWidth = 32;
 const spriteWitchHeight = 48;
