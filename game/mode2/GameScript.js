@@ -708,7 +708,7 @@ function step() {
     // Agora o GroundY é usado como base da posicao inicial para checar se é necessario desenhar o chao e a nuvem de acordo de uma funcao
     // groundY + (gravity / 3) < (hCanvas + 100) -> Se o valor base mais o quanto que ele desceu é maior que a posicao mais baixa mais 100, ele para de desenhar
     // Se ele para de desenhar entao ele nao esta mais revivendo e nem na posicao inicial
-    if (timer_to_go >= 650 || is_playing) {
+    if (timer_to_go >= 1050 || is_playing) {
         gravity++;
         downCount++;
         if (onStarterPosition && groundY + (gravity / 3) < (hCanvas + 100)) {

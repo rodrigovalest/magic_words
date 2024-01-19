@@ -451,8 +451,6 @@ let powerupTimer = [0, 0];
 let activatePower = false;
 let types = ["2x", "+1", "Shield", "Shuffle", "NoVogals", "Death", "Normal", "Normal", "Normal", "Normal"];
 
-
-
 //Classe que é utilizada para criar objetos Word
 //Word tem: a palavra em si, a posição no canvas, se foi digitada e o seu tamanho, alem de sua velocidade, tipo, cores de sua caixa e texto
 class classWord {
@@ -570,7 +568,7 @@ function step() {
             let word = new classWord(words[getRandomInt(0, words.length - 1)], platPlaces[platChoosePlace], 0, platSpeed / 10,
                 types[getRandomInt(0, types.length)]);
 
-            //A cada ciclo,vai aumentando a velocidade que as palavras vão diminuindo
+            //A cada ciclo,vai aumentando a velocidade que as palavras vão descendo
             if (platSpeed <= 10) {
                 platSpeed += 0.05;
             }
