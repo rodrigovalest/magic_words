@@ -234,8 +234,12 @@ function playStop() {
     platCount = 3;
     cloudArray = [];
 
-    //Reseta o score
+    //Reseta o score e power ups
     score = 0;
+    shield = false;
+    double_points = false;
+    oneLife = false;
+    powerupTimer = [0, 0];
 
     // Seta a Fonte padrão (para não dar problema no tamanho das palavras)
     ctx.fillStyle = "lightgray";
@@ -418,7 +422,7 @@ function drawWitchFrame(witchSprite, frameY, canvasX, canvasY) {
 ///Função para desenhar um sprite da bruxinha fazendo magia, contendo o seu frame
 function drawWitchChargeFrame(frameY, canvasX, canvasY) {
     ctx.drawImage(SpriteWitchCharge, 0, frameY * spriteWitchChargeSize,
-        spriteWitchChargeSize, spriteWitchChargeSize, canvasX, canvasY, witchXScale, witchYScale);
+        spriteWitchChargeSize, spriteWitchChargeSize, canvasX - 20, canvasY - 5, witchXScale * 1.5, witchYScale);
 }
 
 //Variaveis para animação de frames -Quantos frames por segundo;
