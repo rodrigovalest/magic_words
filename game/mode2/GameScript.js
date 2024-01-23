@@ -79,32 +79,6 @@ function randomString(s) {
     return s.split("").sort(function () { return 0.5 - Math.random() }).join("");
 }
 
-//Posta a pontuação do jogador no banco de dados, junto com o modo de jogo
-const fetchCredentials = async () => {
-    let playerscore = score;
-    let mode = "stairs";
-    let credentials = {
-        "score": playerscore,
-        "mode": mode,
-    }
-
-    const response = await fetch("http://localhost/web1-trabfinal/api/match/index.php", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: localStorage.getItem("token")
-        },
-        body: JSON.stringify(credentials)
-    });
-
-    if (!response.ok) {
-        alert("Something went wrong. Try again!");
-        return;
-    }
-
-    const data = await response.json();
-    console.log(data);
-};
 
 // Escreve no canvas um texto com outline, podendo mudar o tamanho, a cor e a fonte, junto com o tamanho da linha
 function drawStroked(text, x, y, font, stroke, fill, line) {
@@ -118,6 +92,33 @@ function drawStroked(text, x, y, font, stroke, fill, line) {
     ctx.fillText(text, x, y);
 }
 
+// Funcao que o volume dos audios de acordo com o valor do componente range no html
+function SetVolume(value) {
+    document.getElementById("volume_icon").textContent = "volume_up";
+    idle_music.volume = (value / 100);
+    pause_music.volume = (value / 100);
+    gameover_music.volume = (value / 100);
+    magic_sound.volume = (value / 100);
+    muted = false;
+}
+
+// Funcao que caso nao esteja mutado guarda o valor do volume, muda o volume para zero, e muda o visual do componente
+// Caso esteja, muda o visual e seta o volume para o valor guardado 
+function mute() {
+    if (!muted) {
+        volume_value = document.getElementById("vol-control").value;
+        SetVolume(0);
+        document.getElementById("volume_icon").textContent = "volume_off";
+        document.getElementById("vol-control").value = 0;
+        muted = true;
+    } else {
+        document.getElementById("vol-control").value = volume_value
+        SetVolume(volume_value);
+    }
+
+}
+
+
 //Quando o jogo acabar, ele roda essa função ciclica
 function gameOverStep() {
 
@@ -130,6 +131,10 @@ function gameOverStep() {
     document.getElementById("gameover").style.display = "block";
     document.getElementById("textscore").style.display = "none";
     document.getElementById("powers").style.display = "none";
+
+    // Quando o jogo acabar, a musica da jogatina é pausada e "rebobinada"
+    idle_music.pause();
+    idle_music.currentTime = 0;
 
     // Começo do Frame para desenhar a tela, apagando a tela
     ctx.clearRect(0, 0, wCanvas, hCanvas);
@@ -159,6 +164,10 @@ function gameOverStep() {
         }
 
     }
+
+    // Desenha o fundo com a cor setada anteriormente, sendo azul ou preto
+    ctx.fillRect(0, 0, wCanvas, hCanvas);
+
     // Se a tela ta preta, vai aumentando o alpha da imagem das estrelas para que ela apareça
     if (red <= 0 && green <= 0 && blue <= 0) {
         bgOpacity = bgOpacity >= 1 ? 1 : bgOpacity + 0.01;
@@ -169,9 +178,6 @@ function gameOverStep() {
         spaceBgY[1] = spaceBgY[1] >= hCanvas ? -hCanvas : spaceBgY[1] += 1 / 5;
         ctx.globalAlpha = 1;
     }
-
-    // Desenha o fundo com a cor setada anteriormente, sendo azul ou preto
-    ctx.fillRect(0, 0, wCanvas, hCanvas);
 
     // Para cada nuvem da pilha, desenhe ela indo para a direcao oposta que ela nasceu
     cloudArray.forEach((cloudInst, index) => {
@@ -199,63 +205,100 @@ function gameOverStep() {
 // Preparação para começar o jogo
 function playStop() {
 
-    // Faz desaparecer os botoes, ativa o pontuação do canto e coloca ela no 0
-    document.getElementById("gameover").style.display = "none";
-    document.getElementById("textscore").style.display = "flex";
-    document.getElementById("powers").style.display = "flex";
-    document.getElementById("score").textContent = 0;
+    // Por causa do google, a musica so pode comecar quando hover pelo menos um clique na pagina, por isso
+    // o jogo so pode comecar quando o player clicar no botao de comecar ( Para nao dar problemas do jogo comecar por outros meios)
+    if (game_start) {
+        // Faz desaparecer os botoes, ativa o pontuação do canto e coloca ela no 0
+        document.getElementById("gameover").style.display = "none";
+        document.getElementById("game_start").style.display = "none";
+        document.getElementById("textscore").style.display = "flex";
+        document.getElementById("powers").style.display = "flex";
+        document.getElementById("score").textContent = 0;
 
-    //Permite começar o jogo e Reseta o tempo
-    gameOver = false;
-    tempo = 0;
+        // Caso possa tocar musica, toque e rebobine a musica de gameover
+        if (can_music_play) {
+            idle_music.play();
+            gameover_music.pause();
+            gameover_music.currentTime = 0;
+        }
 
-    //Variaveis do personagem para que ele fique na parte debaixo da tela com a terra embaixo dele
-    onStarterPosition = true;
-    revived = false;
-    is_playing = false;
-    downCount = 1;
-    gravity = 1;
-    timer_to_go = 0;
-    character.x = wCanvas / 2 - spriteWitchWidth;
-    character.y = hCanvas - spriteWitchHeight;
+        //Permite começar o jogo e Reseta o tempo
+        gameOver = false;
+        tempo = 0;
 
-    //Limpa os conteudos da array das palavras a serem digitadas, que estao sendo digitadas e a ultima digitada
-    droppingWords.length = 0;
-    typingWord = "";
-    lastTypedWord = "";
+        //Variaveis do personagem para que ele fique na parte debaixo da tela com a terra embaixo dele
+        onStarterPosition = true;
+        revived = false;
+        is_playing = false;
+        downCount = 1;
+        gravity = 1;
+        timer_to_go = 0;
+        character.x = wCanvas / 2 - spriteWitchWidth;
+        character.y = hCanvas - spriteWitchHeight;
 
-    //Reseta a velocidade das plataformas, o tempo no qual elas aparecem, a quantidade e a array das nuvens
-    platSpeed = 5;
-    platCool = 699;
-    platCount = getRandomInt(1, 3);
-    cloudArray = [];
+        //Limpa os conteudos da array das palavras a serem digitadas, que estao sendo digitadas e a ultima digitada
+        droppingWords.length = 0;
+        typingWord = "";
+        lastTypedWord = "";
 
-    //Reseta o score
-    score = 0;
+        //Reseta a velocidade das plataformas, o tempo no qual elas aparecem, a quantidade e a array das nuvens
+        platSpeed = 5;
+        platCool = 699;
+        platCount = getRandomInt(1, 3);
+        cloudArray = [];
 
-    // Seta a Fonte padrão (para não dar problema no tamanho das palavras)
-    ctx.fillStyle = "lightgray";
-    ctx.font = "16px Blinker";
+        //Reseta o score
+        score = 0;
+        shield = false;
+        double_points = false;
+        oneLife = false;
+        powerupTimer = [0, 0];
+        red = 135, green = 206, blue = 250, steps = 1;
 
-    //Começa a rodar o jogo
-    step();
+        // Seta a Fonte padrão (para não dar problema no tamanho das palavras)
+        ctx.fillStyle = "lightgray";
+        ctx.font = "16px Blinker";
+
+        //Começa a rodar o jogo
+        step();
+    }
 }
 
 // Pausar
 function pause() {
-
-    // Seta a cor e o icone do pausa depedendo se esta ou nao pausado
-    if (paused) {
-        paused = false;
-        document.getElementById("pause_icon").textContent = "pause"
-        document.getElementById("pause").style.backgroundColor = "white";
-        document.getElementById("pause").style.color = "black";
-        step();
-    } else {
-        paused = true;
-        document.getElementById("pause_icon").textContent = "play_arrow"
-        document.getElementById("pause").style.backgroundColor = "black";
-        document.getElementById("pause").style.color = "white";
+    // Se o jogo Comecou e se esta pausado, despause, pare a musica de pause, muda a cor do botao, tira a tela de pause
+    // E comeca ou a musica normal ou de game over e comeca o step, se foi game over, gameoverstep 
+    if (game_start) {
+        if (paused) {
+            paused = false
+            pause_music.pause();
+            document.getElementById("pause_icon").textContent = "pause"
+            document.getElementById("pause").style.backgroundColor = "white";
+            document.getElementById("pause").style.color = "black";
+            document.getElementById("pause_screen").style.display = "none";
+            if (!gameOver && can_music_play) {
+                idle_music.play();
+                step();
+            } else if (gameOver && can_music_play) {
+                gameover_music.play();
+                gameOverStep();
+            }
+        } else {
+            // Se nao pause o jogo, muda o botao, pause as musicas e comeca a musica de pause
+            paused = true;
+            document.getElementById("pause_icon").textContent = "play_arrow"
+            document.getElementById("pause").style.backgroundColor = "black";
+            document.getElementById("pause").style.color = "white";
+            document.getElementById("pause_screen").style.display = "flex";
+            if (!gameOver) {
+                idle_music.pause();
+            } else {
+                gameover_music.pause();
+            }
+            if (can_music_play) {
+                pause_music.play();
+            }
+        }
     }
 }
 
@@ -317,6 +360,16 @@ const droppingWords = [];
 let typingWord = "";
 let lastTypedWord = "";
 let paused = false;
+let game_start = false;
+
+//Audio
+let can_music_play = true;
+const idle_music = document.getElementById("idle_music");
+const gameover_music = document.getElementById("gameover_music");
+const pause_music = document.getElementById("pause_music");
+let muted = false;
+let volume_value = 100;
+const magic_sound = document.getElementById("magic_sound");
 
 //Seta a imagem da Torre
 const Bg = new Image();
@@ -416,6 +469,15 @@ function drawWitchFrame(witchSprite, frameY, canvasX, canvasY) {
 function drawWitchChargeFrame(frameY, canvasX, canvasY) {
     ctx.drawImage(SpriteWitchCharge, 0, frameY * spriteWitchChargeSize,
         spriteWitchChargeSize, spriteWitchChargeSize, canvasX, canvasY, witchXScale, witchYScale);
+}
+
+const SpritePuff = new Image();
+SpritePuff.src = "../images/puff_5.png"
+let puff_timer = -1;
+let can_puff = false;
+
+function drawPuff(frameX, canvasX, canvasY) {
+    ctx.drawImage(SpritePuff, frameX * 32, 0, 32, 32, canvasX, canvasY, 32 * 4, 32 * 4);
 }
 
 //Variaveis para animação de frames -Quantos frames por segundo;
@@ -678,16 +740,29 @@ function step() {
         if (currentLoopIndex >= cycleLoop) {
             currentLoopIndex = 0;
         }
+
+        // Se fumaça pode aparecer (O player digitou uma palavra) anime a fumaca até todos os frames acontecerem, ai reseta o timer 
+        // e faz com que a fumaca nao continue
+        if (can_puff) {
+            puff_timer++;
+            if (puff_timer >= 4) {
+                puff_timer = -1;
+                can_puff = false;
+            }
+        }
     }
 
     //Caso o jogador não tenha nada digitado, ele não está jogando, e o oposto tbm vale
     character.playing = typingWord != "" ? true : false;
 
-    //Se o jogado não estiver digitando, desenhe ele parado, se não, desenhe ele fazendo magia 
+    //Se o jogado não estiver digitando, desenhe ele parado, se não, desenhe ele fazendo magia , e desenhe a fumaca em cima dele
+    // (pode ou nao aparecer algo)
     if (!character.playing) {
         drawWitchFrame(SpriteWitchIdle, currentLoopIndex, character.x, character.y - 105);
+        drawPuff(puff_timer, character.x - 25, character.y - 110)
     } else {
         drawWitchChargeFrame(currentLoopIndex, character.x, character.y - 105);
+        drawPuff(puff_timer, character.x - 25, character.y - 110)
     }
 
     // Se ele comecou o jogo, o tempo de ir fica no 0 e a posicao do personagem é igual da "word" que ele digitou
@@ -741,8 +816,11 @@ function step() {
         } else {
             console.log("Acabou");
             gameOver = true;
-            fetchCredentials();
+            // fetchCredentials();
             gameOverStep();
+            if (can_music_play) {
+                gameover_music.play();
+            }
             return;
         }
     }
@@ -779,6 +857,11 @@ document.addEventListener("keypress", function (event) {
                 //Adiciona a pontuação
                 score += 10 * scoreMult;
                 document.getElementById("score").textContent = score;
+
+                // Toca um efeito sonoro e ativa a fumaça
+                magic_sound.currentTime = 0;
+                magic_sound.play();
+                can_puff = true;
 
                 //Reseta a string que esta sendo digitada,confirma que essa palavra foi digitada, essa palavra digitada é guardada
                 // Muda o tipo da "word" digitada, fazendo ela uma palavra digitada
@@ -819,8 +902,11 @@ document.addEventListener("keypress", function (event) {
                         } else {
                             console.log("Acabou");
                             gameOver = true;
-                            fetchCredentials();
+                            // fetchCredentials();
                             gameOverStep();
+                            if (can_music_play) {
+                                gameover_music.play();
+                            }
                             return;
                         }
 

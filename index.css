@@ -110,11 +110,11 @@ html {
 
 /* Botao de Desligar */
 #power_button {
-    position: absolute;
+    /* position: absolute;
     z-index: 10;
     top: 50%;
     right: 50%;
-    transform: translate(320px, 260px);
+    transform: translate(328px, 260px); */
     display: flex;
     align-items: center;
     background-color: green;
@@ -123,6 +123,18 @@ html {
     color: white;
     margin: 10px;
     transition-duration: 0.4s;
+}
+
+.side_buttons {
+    position: absolute;
+    z-index: 10;
+    top: 50%;
+    right: 50%;
+    transform: translate(328px, -80px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Background */

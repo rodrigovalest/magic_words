@@ -42,17 +42,54 @@
         </div>
         <img src="../../images/DoodleJumpFrame.png" alt="" id="doodle">
         <img src="../../images/Window.png" alt="" id="window">
-        <button id="power_button" style="background-color: green;border-color: darkgreen;"
-            onclick="TurnTv('../../index.html')">
-            <span class="material-symbols-outlined">
-                power_settings_new
+
+        <div id="pause_screen" class="title_screen">
+            <span style="margin-bottom: 20px;">
+                Pausado
             </span>
-        </button>
-        <button onclick="pause()" id="pause">
-            <span class="material-symbols-outlined" id="pause_icon">
-                pause
-            </span>
-        </button>
+        </div>
+        <div class="side_buttons">
+            <div class="d-flex flex-column  align-items-center" id="audio_control">
+                <button style="border: 0px;background-color: white;" onclick="mute()">
+                    <span class="material-symbols-outlined" id="volume_icon">
+                        volume_up
+                    </span>
+                </button>
+
+                <span>+</span>
+                <input id="vol-control" type="range" orient="vertical" value="100" min="0" max="100" step="1"
+                    oninput="SetVolume(this.value)" onchange="SetVolume(this.value)">
+                <span>-</span>
+            </div>
+            <button onclick="pause()" id="pause">
+                <span class="material-symbols-outlined" id="pause_icon">
+                    pause
+                </span>
+            </button>
+            <button id="power_button" style="background-color: green;border-color: darkgreen;"
+                onclick="TurnTv('../../index.html');can_music_play = false;SetVolume(0);game_start=false">
+                <span class="material-symbols-outlined">
+                    power_settings_new
+                </span>
+            </button>
+            <audio id="idle_music" loop>
+                <source src="../../sound/Ludum Dare 38 - Track 9.wav" type="audio/wav">
+                Your browser does not support the audio element.
+            </audio>
+            <audio id="gameover_music" loop>
+                <source src="../../sound/Ludum Dare 38 - Track 10.wav" type="audio/wav">
+                Your browser does not support the audio element.
+            </audio>
+            <audio id="pause_music" loop>
+                <source src="../../sound/Ludum Dare 38 - Track 5.wav" type="audio/wav">
+                Your browser does not support the audio element.
+            </audio>
+            <audio id="magic_sound">
+                <source src="./../../sound/magic_sound.wav" type="audio/wav">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+        <button class="button title_screen" id="game_start" onclick="game_start = true;playStop()">Começar</button>
     </div>
 
     <!-- Parte de cima - Onde o jogo rola -->
@@ -228,104 +265,6 @@
             </div>
         </div>
         <!--    Manual -->
-        <!--    Ligas -->
-        <div class="d-flex flex-column justify-content-center px-4 py-1 align-center m-0"
-            style="background-color: lightskyblue;height: fit-content;">
-            <!-- Titulo -->
-            <div class="container d-flex flex-column ">
-                <span class="md_title" style="color: white;">Ligas</span>
-                <span class="md_subtitle" style="font-family: 'Blinker';color: white;">Quem chegou mais longe no espaço?
-                    Você ou seus amigos? Quem é a melhor bruxa do mundo? Com o sistema de ligas você consegue ver o quão
-                    longe você chegou no espaço comparado a todos os jogadores do mundo ou contra um grupo de
-                    jogadores.</span>
-            </div>
-            <!-- Titulo -->
-            <!-- Conjunto de Bolhas -->
-            <div class="parent">
-                <div class="container item d-flex justify-content-center align-items-start"
-                    style="position: relative;z-index: 100;">
-                    <div class="row d-flex flex-row justify-content-center" style="max-width: 100%;">
-                        <!-- Contra todos -->
-                        <div class="col-12 col-xl-4 p-2">
-                            <div class="bubble d-flex flex-column justify-content-start text-center h-100">
-                                <span class="fs-2" style="color: black;">Batalhe contra o Mundo</span>
-                                <span class="sm_text text-start p-2">Ao terminar um jogo sua Pontuação é colocada no
-                                    ranking da liga geral do mundo. Ela é vinculada com sua conta, onde outros jogadores
-                                    poderam ver a sua pontuação. É possivel ver as maiores Pontuações de todos os tempos
-                                    ou da semana, tambem podendo diferenciar as Pontuações entre os modos de
-                                    jogo!</span>
-                                <div class="row m-0 d-flex justify-content-center align-items-center h-100 p-2">
-                                    <img src="../../images/bruxa_gif.gif" alt class="col-6" style="height: calc(62px * 2.2);
-                                            width: calc(48px * 2.6);">
-                                    <img src="../../images/world.gif" alt class="col-6" style="height: calc(62px * 2.2);
-                                        width: calc(48px * 2.2);">
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Contra todos -->
-                        <!-- Contra amigos -->
-                        <div class="col-12 col-xl-4 p-2">
-                            <div class="bubble d-flex flex-column justify-content-start text-center h-100 ">
-                                <span class="fs-2" style="color: black;">Batalhe entre Amigos</span>
-                                <span class="sm_text text-start p-2">Magic Words pertmite a criação de ligas fechadas,
-                                    com nome e palavra-chave, onde jogadores que possuem ambos possam entrar nessa liga.
-                                    As ligas fechadas só mostraram as Pontuações dos jogadores que estão na liga, então
-                                    é um ótimo jeito de ver quem é melhor dentre seus amigos, seja de todos os tempos ou
-                                    semanalmente!</span>
-                                <div class="row m-0 d-flex justify-content-center align-items-center p-2  h-100">
-                                    <img src="../../images/bruxa_gif.gif" alt class="col-6" style="height: calc(62px * 2.2);
-                                        width: calc(48px * 2.6);">
-                                    <img src="../../images/bruxa_gif.gif" alt class="col-6" style="transform: scaleX(-1);height: calc(62px * 2.2);
-                                        width: calc(48px * 2.6);">
-                                </div>
-
-                            </div>
-                        </div>
-                        <!-- Contra amigos -->
-                        <!-- Contra si -->
-                        <div class="col-12 col-xl-4 p-2">
-                            <div class="bubble d-flex flex-column justify-content-start text-center h-100">
-                                <span class="fs-2" style="color: black;">Batalhe contra si mesmo?</span>
-                                <span class="sm_text text-start p-2">Quer ver suas Pontuações passadas? Quer ver se está
-                                    melhorando ou piorando? No relatorio você pode observar o seu progresso no jogo,
-                                    desde a sua primeira partida até a última, todas estão encontradas no
-                                    relátorio!</span>
-                                <div class="row m-0 d-flex justify-content-center align-items-center p-2 h-100">
-                                    <img src="../../images/bruxa_idle.gif" alt class="col-6" style="height: calc(62px * 2.2);
-                                        width: calc(48px * 2.2);">
-                                    <img src="../../images/mirror.png" alt class="col-6" style="height: calc(62px * 2.2);
-                                    width: calc(48px * 2.2);">
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Contra si -->
-                    </div>
-                </div>
-                <!-- Background nuvens -->
-                <div class="item">
-                    <div id="background-wrap">
-                        <div class="x1">
-                            <div class="cloud"></div>
-                        </div>
-                        <div class="x2">
-                            <div class="cloud"></div>
-                        </div>
-                        <div class="x3">
-                            <div class="cloud"></div>
-                        </div>
-                        <div class="x4">
-                            <div class="cloud"></div>
-                        </div>
-                        <div class="x5">
-                            <div class="cloud"></div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Background nuvens -->
-            </div>
-            <!-- Conjunto de Bolhas -->
-        </div>
-        <!--    Ligas -->
         <!--    Creditos -->
         <div class="d-flex justify-content-center px-4 py-1 align-center m-0" style="background-color:lightskyblue;">
             <div class="container row d-flex justify-content-center">
