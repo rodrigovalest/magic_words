@@ -89,7 +89,10 @@
                 Your browser does not support the audio element.
             </audio>
         </div>
-        <button class="button title_screen" id="game_start" onclick="game_start = true;playStop()">Começar</button>
+        <button class="button title_screen" id="game_start" style="--button_color:white;--button_text_color:black;"
+            onclick="game_start = true;playStop()">
+            Começar
+        </button>
     </div>
 
     <!-- Parte de cima - Onde o jogo rola -->
@@ -248,18 +251,35 @@
                                 Morra</span><br></div>
                         <span style="font-family: 'Blinker';">As nuvens desaparecem ao sair da tela, então a Willow tem
                             que ficar trocando de nuvem para não morrer, mas tenha cuidado para não subir em uma nuvem
-                            com letras vermelhas!</span>
+                            com letras vermelhas! <br>
+                            Caso você morra, mas tenha mais uma vida, não se estresse, a Willow irá renascer e você
+                            poderá digitar qualquer palavra que vier!
+                        </span>
+                        <div class="d-flex justify-content-center">
+                            <img src="./images/bruxa_icon.png" alt="" style="height: 100px;width: auto; padding: 5px;">
+                            <img src="./images/pixelart_skull.png" alt=""
+                                style="height: 60px;width: auto; align-self: flex-end; padding: 5px;">
+                        </div>
                     </div>
                 </div>
                 <!-- Nao Morra -->
                 <!-- Modos -->
                 <div class="col-12 col-md-6 text-lg-start text-center p-2">
-                    <div class="bubble ">
+                    <div class="bubble h-100">
                         <div class="text-center"><span class="fs-2">Escolha o seu modo de Jogar</span><br></div>
                         <span style="font-family: 'Blinker';">A dois modos de Jogo: O Stairs e o Random.<br>No modo
                             Stairs sempre aparecerá três nuvens para a Willow escolher, sendo que ela pode escolher
-                            somente uma, enaqunto no modo Random, pode aparecer entre uma até três nuvens, podendo a
+                            somente uma, enquanto no modo Random, pode aparecer entre uma até três nuvens, podendo a
                             Willow subir em todas elas caso queira.</span>
+                        <div class="d-flex justify-content-center">
+                            <img src="./images/CloudSprite.png" alt=""
+                                style="width:calc(78px * 1.3); height:calc(44px * 1.3);align-self: center;padding: 5px;">
+                            <span
+                                style="-webkit-text-stroke: 3px;-webkit-text-stroke-color: black; color: yellow; font-size: 60px;padding: 5px;">
+                                ?</span>
+                            <img src="./images/CloudSprite.png" alt=""
+                                style="width:calc(78px * 1.3); height:calc(44px * 1.3);align-self: center;padding: 5px;">
+                        </div>
                     </div>
                 </div>
                 <!-- Modos -->
@@ -271,77 +291,113 @@
             <div class="container row d-flex justify-content-center">
                 <span class="md_title col-12" style="color: white;">Créditos</span>
                 <!-- Programadores -->
-                <div class="col-12 col-lg-5 d-flex flex-column justify-content-center align-items-center">
+                <div class="col-12 d-flex flex-column align-items-center">
                     <span class="fs-2">Programadores</span>
-                    <div class="d-flex align-items-start justify-content-center flex-column">
-                        <div class="row d-flex flex-row p-1 align-items-center justify-content-center">
-                            <div class="col-12 col-lg-3 d-flex flex-column align-items-center justify-content-center">
-                                <img src="../../images/Dante.jpg" alt
-                                    style="width: 100px;border: #303030 solid 5px; border-radius: 100%; height: 100px;">
+                    <div class="row p-0 m-0 w-100">
+                        <div
+                            class="col-12 col-lg-6 d-flex flex-column flex-sm-row align-items-center justify-content-center">
+                            <div class="col-12 col-sm-3 d-flex justify-content-center p-1">
+                                <img src="./images/Dante.jpg" alt
+                                    style="width: 80px;border: #303030 solid 5px; border-radius: 100%; height: 80px;">
                             </div>
-                            <div class="d-flex flex-column align-items-center justify-content-center align-items-lg-start 
-                            justify-content-lg-start px-3 col-12 col-lg-9">
-                                <span class="fs-4">Matheus Nunes Santana</span>
-                                <span>Git Hub : <a href>Humanaice</a></span>
-                                <span>E-mail : <a href>matheusnsantana@gmail.com</a></span>
-                                <span>Linkedin : <a
-                                        href="https://www.linkedin.com/in/matheus-santana-36058a266/">Matheus
-                                        Santana</a></span>
+                            <div
+                                class="col-9 d-flex flex-column justify-content-center align-items-center align-items-sm-start">
+                                <span class="fs-5 text-center text-sm-start" style="width: fit-content;">
+                                    Matheus Santana</span>
+                                <span style="width: fit-content;text-align: center;">Git Hub : <a
+                                        href="https://github.com/Humanaice">Humanaice</a></span>
+                                <span style="width: fit-content;text-align: center;">Email :
+                                    matheusnsantana@gmail.com</span>
+                                <span style="width: fit-content;text-align: center;">Linkedin :
+                                    <a href="https://www.linkedin.com/in/matheus-santana-36058a266/">
+                                        Matheus Santana</a>
+                                </span>
                             </div>
                         </div>
-                        <div class="row d-flex flex-row p-1 align-items-center justify-content-center">
-                            <div class="col-12 col-lg-3 d-flex flex-column align-items-center justify-content-center">
-                                <img src="../../images/Rodrigo.png" alt
-                                    style="width: 100px;border: #303030 solid 5px; border-radius: 100%;height: 100px;">
+                        <div
+                            class="col-12 col-lg-6 d-flex flex-column flex-sm-row flex-lg-row-reverse align-items-center justify-content-center">
+                            <div class="col-3 d-flex justify-content-center p-1">
+                                <img src="./images/Rodrigo.png" alt
+                                    style="width: 80px;border: #303030 solid 5px; border-radius: 100%;height: 80px;">
                             </div>
-                            <div class="d-flex flex-column align-items-center justify-content-center align-items-lg-start 
-                            justify-content-lg-start px-3 col-12 col-lg-9">
-                                <span class="fs-4">Rodrigo do Vale
-                                    Stankowicz</span>
-                                <span>Git Hub : <a href="https://github.com/rodrigovalest">rodrigovalest</a></span>
-                                <span>E-mail : <a href></a></span>
-                                <span>Linkedin : <a href></a></span>
+                            <div
+                                class="col-9 d-flex flex-column justify-content-center align-items-center align-items-sm-start align-items-lg-end">
+                                <span class="fs-5 text-center text-sm-start" style="width: fit-content;">
+                                    Rodrigo do Vale</span>
+                                <span style="width: fit-content;text-align: center;">Git Hub :
+                                    <a href="https://github.com/rodrigovalest">rodrigovalest</a></span>
+                                <span style="width: fit-content;text-align: center;">E-mail :
+                                    rodrigo.vale.st@gmail.com</span>
+                                <span style="width: fit-content;text-align: center;">Linkedin :
+                                    <a href="https://www.linkedin.com/in/rodrigo-do-vale-stankowicz-8a6529288/">
+                                        Rodrigo do Vale
+                                    </a>
+                                </span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- Programadores -->
                 <!-- Arte -->
-                <div class="col-12 col-lg-5 d-flex flex-column align-items-center">
+                <div class="col-12 d-flex flex-column align-items-center">
                     <span class="fs-2">Arte feita por:</span>
-                    <div class="d-flex flex-column justify-content-center">
-                        <span class="fs-5">Backgorund da Tv: <a
-                                href="https://www.lexaloffle.com/pico-8.php">Pico-8</a></span>
-                        <span class="fs-5">Bruxa: <a href="https://9e0.itch.io/witches-pack">9E0</a>
-                        </span>
-                        <span class="fs-5">Janela: <a
-                                href="https://pt.vecteezy.com/arte-vetorial/7530655-vector-pixel-windows-for-games">Vecteezy</a>
-                        </span>
-                        <span class="fs-5">Quadro do Doddle Jump: <a
-                                href="https://www.amazon.com.br/Doodle-Jump-Journal-Lima-Sky/dp/1452101183">Doodle
-                                Jump
-                                Jornal</a>
-                        </span>
-                        <span class="fs-5">Torre : <a
-                                href="https://store.steampowered.com/app/2231450/Pizza_Tower/">Pizza
-                                Tower</a></span>
-                        <span class="fs-5">Nuvem : <a
-                                href="https://www.megavoxels.com/learn/how-to-make-pixel-art-clouds/">Mega
-                                Voxels</a>
-                        </span>
-                        <span class="fs-5">Terra : <a
-                                href="https://stock.adobe.com/br/images/colorful-simple-flat-pixel-art-illustration-of-cartoon-outdoor-landscape-background-pixel-arcade-screen-for-game-design-game-design-concept-in-retro-style/449685130">
-                                George Chairborn</a>
-                        </span>
-                        <span class="fs-5">Musica : <a href="https://soundcloud.com/abstraction/albums">
-                                Abstraction</a>
-                        </span>
-                        <span class="fs-5">Efeito Sonoro : <a href="https://mixkit.co/free-sound-effects/magic/">
-                                Mixkit (Fantasy game sweep notification)</a>
-                        </span>
-                        <span class="fs-5">Efeito Fumcaça : <a href="https://nyknck.itch.io">
-                                NYKNCK</a>
-                        </span>
+                    <div class="row p-0 m-0 d-flex flex-row justify-content-center">
+                        <div class="col-12 col-sm-6 d-flex flex-column">
+                            <span class="fs-5">Backgorund da Tv:
+                                <a href="https://www.lexaloffle.com/pico-8.php">Pico-8</a>
+                            </span>
+                            <span class="fs-5">Bruxa:
+                                <a href="https://9e0.itch.io/witches-pack">9E0</a>
+                            </span>
+                            <span class="fs-5">Janela:
+                                <a href="https://pt.vecteezy.com/arte-vetorial/7530655-vector-pixel-windows-for-games">
+                                    Vecteezy
+                                </a>
+                            </span>
+                            <span class="fs-5">Torre :
+                                <a href="https://store.steampowered.com/app/2231450/Pizza_Tower/">
+                                    Pizza Tower
+                                </a>
+                            </span>
+                            <span class="fs-5">Nuvem :
+                                <a href="https://www.megavoxels.com/learn/how-to-make-pixel-art-clouds/">
+                                    Mega Voxels
+                                </a>
+                            </span>
+                            <span class="fs-5">Terra :
+                                <a
+                                    href="https://stock.adobe.com/br/images/colorful-simple-flat-pixel-art-illustration-of-cartoon-outdoor-landscape-background-pixel-arcade-screen-for-game-design-game-design-concept-in-retro-style/449685130">
+                                    George Chairborn
+                                </a>
+                            </span>
+                            <span class="fs-5">Caveira :
+                                <a href="https://opengameart.org/content/pixel-art-skull">FancySnacks</a>
+                            </span>
+                        </div>
+                        <div class="col-12 col-sm-6 d-flex flex-column">
+                            <span class="fs-5">Quadro do Doddle Jump: <br>
+                                <a href="https://www.amazon.com.br/Doodle-Jump-Journal-Lima-Sky/dp/1452101183">
+                                    Doodle Jump Jornal
+                                </a>
+                            </span>
+
+                            <span class="fs-5">Musica :
+                                <a href="https://soundcloud.com/abstraction/albums">
+                                    Abstraction
+                                </a>
+                            </span>
+                            <span class="fs-5">Efeito Sonoro :
+                                <a href="https://mixkit.co/free-sound-effects/magic/">
+                                    Mixkit <br>(Fantasy game sweep notification)
+                                </a>
+                            </span>
+                            <span class="fs-5">Efeito Fumcaça :
+                                <a href="https://nyknck.itch.io">
+                                    NYKNCK
+                                </a>
+                            </span>
+                        </div>
+
                     </div>
                 </div>
                 <!-- Arte -->
