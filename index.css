@@ -130,7 +130,7 @@ html {
     z-index: 10;
     top: 50%;
     right: 50%;
-    transform: translate(328px, -80px);
+    transform: translate(328px, -111px);
     display: flex;
     flex-direction: column;
     justify-content: center;

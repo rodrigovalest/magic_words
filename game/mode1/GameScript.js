@@ -62,6 +62,12 @@
 // lado a nuvem vai nascer, e colocando-se essa nuvem numa pilha, e cada frame é desenhado cada nuvem na tela
 
 // Começo da Programacao
+
+function CellKeyboard() {
+    document.getElementById("mobiletext").focus();
+}
+
+
 //Função que produz um número aleatorio entre dois numeros
 function getRandomInt(min, max) {
     min = Math.ceil(min);

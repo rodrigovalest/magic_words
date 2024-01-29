@@ -81,6 +81,20 @@
   transition-duration: 0.4s;
 }
 
+#keyboardcell {
+  display: flex;
+  align-items: center;
+  border-radius: 40px;
+  padding: 2px;
+  /* position: absolute;
+  z-index: 10;
+  top: 50%;
+  right: 50%;
+  transform: translate(311.5px, 230px); */
+  transition-duration: 0.4s;
+  padding: 2px;
+}
+
 #score {
   padding-left: 2px;
 }
